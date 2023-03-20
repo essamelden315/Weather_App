@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="startLigtBlue">#a1c4fd</color>
+    <color name="endLigtBlue">#c2e9fb</color>
+    <color name="nightStart">#09203f</color>
+    <color name="nightEnd">#537895</color>
+
 </resources>
