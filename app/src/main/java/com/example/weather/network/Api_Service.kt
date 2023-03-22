@@ -11,7 +11,7 @@ interface Api_Service {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("exclude") exclude: String,
-        @Query("lang") lang:String = "ar",
+        @Query("lang") lang:String ,
         @Query("appid") appid: String
     ): Response<MyResponse>
 }

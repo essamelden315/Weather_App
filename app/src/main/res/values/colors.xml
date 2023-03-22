@@ -11,5 +11,6 @@
     <color name="endLigtBlue">#c2e9fb</color>
     <color name="nightStart">#09203f</color>
     <color name="nightEnd">#537895</color>
+    <color name="textColor">#021340</color>
 
 </resources>

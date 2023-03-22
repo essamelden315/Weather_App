@@ -33,10 +33,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         createNavDrawer()
-        /*lifecycleScope.launch (Dispatchers.IO){
+        lifecycleScope.launch (Dispatchers.IO){
             val ref =ProductClient.getInstance()
-            Log.i("gedoTag", ""+ref?.getRetrofitList())
-        }*/
+            Log.i("gedoTag", ""+ref?.getRetrofitList()?.current?.windSpeed)
+        }
 
     /* val light = true
      if(light) {
