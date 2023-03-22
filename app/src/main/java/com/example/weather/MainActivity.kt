@@ -5,7 +5,9 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var drawerLayout:DrawerLayout
     lateinit var appBarConfiguration:AppBarConfiguration
     lateinit var navView:NavigationView
-    lateinit var listner:NavController.OnDestinationChangedListener
+   // lateinit var listner:NavController.OnDestinationChangedListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,6 +37,19 @@ class MainActivity : AppCompatActivity() {
             val ref =ProductClient.getInstance()
             Log.i("gedoTag", ""+ref?.getRetrofitList())
         }*/
+
+    /* val light = true
+     if(light) {
+           cons.setBackgroundResource(R.drawable.gradient_night_background)
+           //activity?.window?.statusBarColor = getColor(requireContext(),R.color.nightStart)
+           activity?.actionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#09203f")))
+       }
+       else{
+
+           cons.setBackgroundResource(R.drawable.gradient_morning_background)
+           //activity?.window?.statusBarColor = getColor(requireContext(),R.color.endLigtBlue)
+           requireActivity().actionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#a1c4fd")))
+       }*/
     }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -58,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         actionBar?.setHomeAsUpIndicator(R.drawable.baseline_menu_24)
         actionBar?.setDisplayShowHomeEnabled(true)
         actionBar?.setDisplayHomeAsUpEnabled(true)
+
 
     }
 
