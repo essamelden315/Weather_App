@@ -19,7 +19,7 @@ class HomeViewModel(private val repo: RepositoryInterface): ViewModel() {
 
     fun getLocalRepo() {
         viewModelScope.launch(Dispatchers.IO) {
-            _products.postValue(repo.getRetrofitWeatherData())
+            _products.postValue(repo.getRetrofitWeatherData(22.44, 20.04,"minutely","en","metric"))
         }
     }
 }

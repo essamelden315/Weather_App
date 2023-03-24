@@ -30,9 +30,9 @@ lateinit var result:MyResponse
         }
     }
 
-    override suspend fun getRetrofitList():MyResponse? {
+    override suspend fun getRetrofitList(lat:Double,lon:Double,exclude:String,lang:String,units:String):MyResponse? {
 
-        var response = myApiService.api_service.getWeatherDetails(33.44, -94.04,"minutely", lang = "ar","bbcb13e1d448621ffd8e565701972f6d")
+        var response = myApiService.api_service.getWeatherDetails(lat,lon,exclude,lang,units)
         if (response.isSuccessful)
            result = response.body()!!
         return result

@@ -23,48 +23,20 @@ data class Current (
     val uvi: Double,
     val clouds: Long,
     val visibility: Long,
-    val windSpeed: Double,
+    val wind_speed: Double,
     val windDeg: Long,
     val windGust: Double,
     val weather: List<Weather>,
-    val pop: Double? = null,
-    val rain: Rain? = null
 )
 
-data class Rain (
-    val the1H: Double
-)
+
 
 data class Weather (
     val id: Long,
     val main: String,
     val description: String,
     val icon: String
-    //val main: Main,
-    //val description: Description,
-    //val icon: Icon
 )
-/*
-enum class Description {
-    HeavyIntensityRain,
-    LightRain,
-    OvercastClouds,
-    ScatteredClouds
-}
-
-enum class Icon {
-    The03D,
-    The04D,
-    The04N,
-    The10D,
-    The10N
-}
-
-enum class Main {
-    Clouds,
-    Rain
-}*/
-
 data class Daily (
     val dt: Long,
     val sunrise: Long,

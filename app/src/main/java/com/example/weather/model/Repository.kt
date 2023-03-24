@@ -13,7 +13,7 @@ class Repository private constructor(rs: RemoteSource):RepositoryInterface {
             return myInstance
         }
     }
-    override suspend fun getRetrofitWeatherData(): MyResponse? {
-        return remoteSource.getRetrofitList()
+    override suspend fun getRetrofitWeatherData(lat:Double,lon:Double,exclude:String,lang:String,units:String): MyResponse? {
+        return remoteSource.getRetrofitList(lat,lon,exclude,lang,units)
     }
 }
