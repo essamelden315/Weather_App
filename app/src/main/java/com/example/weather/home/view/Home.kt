@@ -1,7 +1,6 @@
 package com.example.weather.home.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,7 @@ import com.example.weather.network.RemoteSource
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val My_LOCATION_PERMISSION_ID = 5005
 
 class Home : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -28,6 +28,7 @@ class Home : Fragment() {
     lateinit var manger: LinearLayoutManager
     lateinit var manger2: LinearLayoutManager
     lateinit var viewModel: HomeViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,27 +36,36 @@ class Home : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         manger = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         manger2 = LinearLayoutManager(context)
+
+
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
         var weatherFactory = HomeViewModelFactory(
-            Repository.getInstance(ProductClient.getInstance() as RemoteSource) as Repository
+            Repository.getInstance(ProductClient.getInstance() as RemoteSource) as Repository,
+            requireContext()
         )
         viewModel = ViewModelProvider(this, weatherFactory).get(HomeViewModel::class.java)
+        viewModel.getLatitude_Longitude()
         viewModel.products.observe(viewLifecycleOwner) {
             if (it != null) {
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
             }
         }
-        return binding.root
     }
-    fun convertDate(time:Long):String{
+
+    fun convertDate(time: Long): String {
         var simpleDate = SimpleDateFormat("dd-MM-yyyy")
         var currentDate = simpleDate.format(time.times(1000))
         var date1: Date = simpleDate.parse(currentDate)
         val split = date1.toString().split(" ")
-        var myDate= "${split[0]},${split[2]} ${split[1]} "
+        var myDate = "${split[0]},${split[2]} ${split[1]} "
         return myDate
     }
-    private fun setHomeScreenData(it:MyResponse){
+    private fun setHomeScreenData(it: MyResponse) {
         binding.dateTxt.text = convertDate(it.current.dt)
         binding.countryTxt.text = it.timezone
         binding.degeeTxt.text = it.current.temp.toInt().toString()
@@ -70,7 +80,7 @@ class Home : Fragment() {
         binding.ultravilotValue.text = it.current.uvi.toString()
         binding.windValue.text = "${it.current.wind_speed} m/s"
     }
-    private fun setHomeScreenAdapter(it:MyResponse){
+    private fun setHomeScreenAdapter(it: MyResponse) {
         hourAdapter = HoursAdapter(it.hourly)
         dayAdapter = DailyAdapter(it.daily)
         binding.hoursRV.adapter = hourAdapter
@@ -78,5 +88,6 @@ class Home : Fragment() {
         binding.daysRV.adapter = dayAdapter
         binding.daysRV.layoutManager = manger2
     }
+
 
 }
