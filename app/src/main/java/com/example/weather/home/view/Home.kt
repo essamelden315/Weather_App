@@ -19,8 +19,6 @@ import com.example.weather.network.RemoteSource
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val My_LOCATION_PERMISSION_ID = 5005
-
 class Home : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var hourAdapter: HoursAdapter

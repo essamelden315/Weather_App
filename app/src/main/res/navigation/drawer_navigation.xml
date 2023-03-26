@@ -14,7 +14,11 @@
         android:id="@+id/favorite"
         android:name="com.example.weather.favorite.view.Favorite"
         android:label="fragment_favorite"
-        tools:layout="@layout/fragment_favorite" />
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/fromFavToMap"
+            app:destination="@id/mapsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/alert"
         android:name="com.example.weather.alert.view.Alert"
@@ -25,4 +29,9 @@
         android:name="com.example.weather.settings.view.Settings"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.example.weather.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 </navigation>
