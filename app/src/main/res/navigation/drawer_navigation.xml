@@ -10,15 +10,7 @@
         android:name="com.example.weather.home.view.Home"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
-    <fragment
-        android:id="@+id/favorite"
-        android:name="com.example.weather.favorite.view.Favorite"
-        android:label="fragment_favorite"
-        tools:layout="@layout/fragment_favorite" >
-        <action
-            android:id="@+id/fromFavToMap"
-            app:destination="@id/mapsFragment" />
-    </fragment>
+
     <fragment
         android:id="@+id/alert"
         android:name="com.example.weather.alert.view.Alert"
@@ -30,12 +22,24 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
+        android:id="@+id/favorite"
+        android:name="com.example.weather.favorite.view.Favorite"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/fromFavToMap"
+            app:destination="@id/mapsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
         android:id="@+id/mapsFragment"
         android:name="com.example.weather.mapfragment.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" >
         <action
             android:id="@+id/fromMapToFav"
-            app:destination="@id/favorite" />
+            app:destination="@id/favorite"
+            app:popUpTo="@id/favorite"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

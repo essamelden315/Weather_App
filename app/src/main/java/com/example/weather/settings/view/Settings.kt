@@ -15,6 +15,7 @@ class Settings : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.setTitle("Settings")
         settingsBinding = FragmentSettingsBinding.inflate(inflater, container, false)
         return settingsBinding.root
     }

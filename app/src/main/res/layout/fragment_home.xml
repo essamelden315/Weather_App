@@ -5,6 +5,7 @@
     android:id="@+id/homeConstraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:layout_columnWeight="3"
     tools:context=".home.view.Home">
 

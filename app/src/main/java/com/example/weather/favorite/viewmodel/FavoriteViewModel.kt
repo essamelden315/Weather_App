@@ -22,7 +22,7 @@ class FavoriteViewModel (private val repo: RepositoryInterface): ViewModel() {
     fun insertIntoFav(savedDataFormula: SavedDataFormula){
         viewModelScope.launch (Dispatchers.IO){
                 repo.insertFavData(savedDataFormula)
-            _favData.postValue(repo.showFavData())
+                getLocalRepo()
         }
 
     }

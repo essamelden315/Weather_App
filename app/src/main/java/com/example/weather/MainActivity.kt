@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         navView = findViewById(R.id.navigationView)
         navView.setupWithNavController(navController)
         appBarConfiguration = AppBarConfiguration(navController.graph,drawerLayout)
-        //setupActionBarWithNavController(navController,appBarConfiguration)
         val actionBar = supportActionBar
         actionBar?.setHomeAsUpIndicator(R.drawable.baseline_menu_24)
         actionBar?.setDisplayShowHomeEnabled(true)
@@ -62,8 +61,4 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    /* override fun onSupportNavigateUp(): Boolean {
-       val navController:NavController=findNavController(R.id.nav_host_fragment)
-       return navController.navigateUp(appBarConfiguration)||super.onSupportNavigateUp()
-   }*/
 }

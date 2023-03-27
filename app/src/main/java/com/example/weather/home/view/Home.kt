@@ -33,6 +33,7 @@ class Home : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.setTitle("Home")
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         manger = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         manger2 = LinearLayoutManager(context)

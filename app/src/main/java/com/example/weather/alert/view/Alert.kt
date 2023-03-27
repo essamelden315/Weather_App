@@ -14,6 +14,7 @@ class Alert : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.setTitle("Alert")
         binding = FragmentAlertBinding.inflate(inflater,container,false)
         return binding.root
     }

@@ -34,6 +34,7 @@ class Favorite : Fragment(),ListnerInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.setTitle("Favorite")
         binding=FragmentFavoriteBinding.inflate(inflater, container, false)
         manager = LinearLayoutManager(context)
         val favFactory =FavoriteViewModelFactory(

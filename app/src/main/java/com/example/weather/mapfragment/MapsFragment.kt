@@ -14,6 +14,8 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.example.weather.R
 import com.example.weather.database.ConcreteLocalSource
@@ -68,15 +70,16 @@ class MapsFragment (): Fragment(){
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         locationRequest.setSmallestDisplacement(14f)
         locationRequest.setFastestInterval(3000)
-        binding.searchEdt.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+        binding.searchEdt.setOnEditorActionListener { v, actionId, event ->
             if(actionId==EditorInfo.IME_ACTION_SEARCH ||actionId==EditorInfo.IME_ACTION_DONE
                 ||event.action == KeyEvent.ACTION_DOWN || event.action == KeyEvent.KEYCODE_ENTER)
             {
-                goToSearchLocation()
+                if(!binding.searchEdt.text.isNullOrEmpty())
+                    goToSearchLocation()
             }
 
             false
-        })
+        }
         fusedClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
@@ -110,9 +113,12 @@ class MapsFragment (): Fragment(){
             viewModel.insertIntoFav(SavedDataFormula(latitude,longitude,name))
             Log.i("room", "inserted")
             Toast.makeText(requireContext(),"Location is added",Toast.LENGTH_SHORT)
+            /*var navOptions:NavOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.mapsFragment, true)
+                .build()
+            var navController:NavController = Navigation.findNavController(it);
+            navController.navigate(R.id.favorite, null, navOptions)*/
             Navigation.findNavController(it).navigate(R.id.fromMapToFav)
-            getActivity()?.getFragmentManager()?.popBackStack()
-
         }
 
     }
