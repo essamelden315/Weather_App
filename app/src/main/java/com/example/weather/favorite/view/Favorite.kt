@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.transaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.example.weather.databinding.FragmentFavoriteBinding
 import com.example.weather.favorite.viewmodel.FavoriteViewModel
 import com.example.weather.favorite.viewmodel.FavoriteViewModelFactory
 import com.example.weather.home.viewmodel.HomeViewModel
+import com.example.weather.mapfragment.MapsFragment
 import com.example.weather.model.Repository
 import com.example.weather.model.SavedDataFormula
 import com.example.weather.model.Weather
@@ -34,33 +36,26 @@ class Favorite : Fragment(),ListnerInterface {
     ): View? {
         binding=FragmentFavoriteBinding.inflate(inflater, container, false)
         manager = LinearLayoutManager(context)
-
-
-
-        binding.favFAB.setOnClickListener(){
+        val favFactory =FavoriteViewModelFactory(
+            Repository.getInstance(WeatherClient.getInstance() as RemoteSource
+                ,ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource) as Repository
+        )
+        viewModel = ViewModelProvider(requireActivity(), favFactory).get(FavoriteViewModel::class.java)
+        favAdapter = FavAdapter(listOf(), this)
+        viewModel.favData.observe(viewLifecycleOwner) { data ->
+               favAdapter.setList(data)
+        }
+        binding.FavRV.adapter = favAdapter
+        binding.FavRV.layoutManager = manager
+        binding.favFAB.setOnClickListener() {
             Navigation.findNavController(it).navigate(R.id.fromFavToMap)
         }
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        val favFactory =FavoriteViewModelFactory(
-            Repository.getInstance(WeatherClient.getInstance() as RemoteSource
-                ,ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource) as Repository
-        )
-        viewModel = ViewModelProvider(this, favFactory).get(FavoriteViewModel::class.java)
-        viewModel.favData.observe(viewLifecycleOwner){data ->
-            if(data!=null){
-                favAdapter = FavAdapter(listOf(),this)
-                binding.FavRV.adapter = favAdapter
-                binding.FavRV.layoutManager = manager
-                favAdapter.setList(data)
-            }else{
-                // write lottie animation code here
-            }
 
-        }
+    override fun insertData(savedDataFormula: SavedDataFormula) {
+        viewModel.insertIntoFav(savedDataFormula)
     }
 
     override fun deleteDatafromDB(savedDataFormula: SavedDataFormula) {

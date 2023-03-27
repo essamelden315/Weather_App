@@ -14,19 +14,22 @@ class FavoriteViewModel (private val repo: RepositoryInterface): ViewModel() {
         getLocalRepo()
     }
 
-    private fun getLocalRepo() {
+     fun getLocalRepo() {
         viewModelScope.launch (Dispatchers.IO){
             _favData.postValue(repo.showFavData())
         }
     }
     fun insertIntoFav(savedDataFormula: SavedDataFormula){
         viewModelScope.launch (Dispatchers.IO){
-            repo.insertFavData(savedDataFormula)
+                repo.insertFavData(savedDataFormula)
+            _favData.postValue(repo.showFavData())
         }
+
     }
     fun deleteFromFav(savedDataFormula: SavedDataFormula){
         viewModelScope.launch (Dispatchers.IO){
             repo.deleteFromFav(savedDataFormula)
+            getLocalRepo()
         }
     }
 

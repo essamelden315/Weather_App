@@ -14,10 +14,12 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.example.weather.R
 import com.example.weather.database.ConcreteLocalSource
 import com.example.weather.database.LocalDataSource
 import com.example.weather.databinding.FragmentMapsBinding
+import com.example.weather.favorite.view.ListnerInterface
 import com.example.weather.favorite.viewmodel.FavoriteViewModel
 import com.example.weather.favorite.viewmodel.FavoriteViewModelFactory
 import com.example.weather.model.Repository
@@ -32,7 +34,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 
-class MapsFragment : Fragment(){
+class MapsFragment (): Fragment(){
     lateinit var fusedClient: FusedLocationProviderClient
     lateinit var binding: FragmentMapsBinding
     lateinit var mapFragment: SupportMapFragment
@@ -96,6 +98,7 @@ class MapsFragment : Fragment(){
         var update: CameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng,fl)
         mMap.addMarker(MarkerOptions().position(latlng))
         mMap.animateCamera(update)
+
         binding.mapAddToFav.setOnClickListener{
             val favFactory = FavoriteViewModelFactory(
                 Repository.getInstance(
@@ -103,10 +106,13 @@ class MapsFragment : Fragment(){
                     , ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource
                 ) as Repository
             )
-            viewModel = ViewModelProvider(this, favFactory).get(FavoriteViewModel::class.java)
+            viewModel = ViewModelProvider(requireActivity(), favFactory).get(FavoriteViewModel::class.java)
             viewModel.insertIntoFav(SavedDataFormula(latitude,longitude,name))
             Log.i("room", "inserted")
-            Toast.makeText(requireContext().applicationContext,"Data inserted successfully",Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(),"Location is added",Toast.LENGTH_SHORT)
+            Navigation.findNavController(it).navigate(R.id.fromMapToFav)
+            getActivity()?.getFragmentManager()?.popBackStack()
+
         }
 
     }
