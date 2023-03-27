@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
@@ -12,10 +13,23 @@
     <androidx.constraintlayout.widget.ConstraintLayout
 
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:backgroundTint="@color/white"
         android:hapticFeedbackEnabled="false">
+
+        <ImageView
+            android:id="@+id/hour_Image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hour_Degree"
+            app:srcCompat="@drawable/barometer" />
 
         <TextView
             android:id="@+id/hour_Date"
@@ -27,38 +41,24 @@
             android:layout_marginBottom="3dp"
             android:text="TextView"
             android:textColor="@color/textColor"
-            app:layout_constraintBottom_toTopOf="@+id/hour_Image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/hour_Image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="3dp"
             app:layout_constraintBottom_toTopOf="@+id/hour_Degree"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hour_Date"
-            app:srcCompat="@drawable/barometer" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/hour_Degree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="3dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="3dp"
             android:text="TextView"
             android:textColor="@color/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/hour_Image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hour_Image" />
+            app:layout_constraintTop_toBottomOf="@+id/hour_Date" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

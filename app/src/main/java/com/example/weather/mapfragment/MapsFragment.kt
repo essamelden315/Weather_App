@@ -1,5 +1,6 @@
-package com.example.weather
+package com.example.weather.mapfragment
 
+import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -9,10 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.weather.R
+import com.example.weather.database.ConcreteLocalSource
+import com.example.weather.database.LocalDataSource
 import com.example.weather.databinding.FragmentMapsBinding
+import com.example.weather.favorite.viewmodel.FavoriteViewModel
+import com.example.weather.favorite.viewmodel.FavoriteViewModelFactory
+import com.example.weather.model.Repository
+import com.example.weather.model.SavedDataFormula
+import com.example.weather.network.RemoteSource
+import com.example.weather.network.WeatherClient
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -26,6 +37,7 @@ class MapsFragment : Fragment(){
     lateinit var binding: FragmentMapsBinding
     lateinit var mapFragment: SupportMapFragment
     lateinit var mMap:GoogleMap
+    lateinit var viewModel:FavoriteViewModel
 
     private val callback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
@@ -78,13 +90,24 @@ class MapsFragment : Fragment(){
     }
 
     private fun goToLatLng(latitude: Double, longitude: Double, fl: Float) {
-        Log.i("mapCoordinates", "${latitude} ${longitude}")
         var geocoder = Geocoder(requireContext()).getFromLocation(latitude,longitude,1)
-        Log.i("geoCoder", "${geocoder?.get(0)?.subAdminArea}, ${geocoder?.get(0)?.adminArea}")
+        var name = "${geocoder?.get(0)?.subAdminArea}, ${geocoder?.get(0)?.adminArea}"
         var latlng = LatLng(latitude,longitude)
         var update: CameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng,fl)
         mMap.addMarker(MarkerOptions().position(latlng))
         mMap.animateCamera(update)
+        binding.mapAddToFav.setOnClickListener{
+            val favFactory = FavoriteViewModelFactory(
+                Repository.getInstance(
+                    WeatherClient.getInstance() as RemoteSource
+                    , ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource
+                ) as Repository
+            )
+            viewModel = ViewModelProvider(this, favFactory).get(FavoriteViewModel::class.java)
+            viewModel.insertIntoFav(SavedDataFormula(latitude,longitude,name))
+            Log.i("room", "inserted")
+            Toast.makeText(requireContext().applicationContext,"Data inserted successfully",Toast.LENGTH_SHORT)
+        }
 
     }
 

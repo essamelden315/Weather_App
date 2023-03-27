@@ -31,7 +31,7 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.example.weather.MapsFragment"
+        android:name="com.example.weather.mapfragment.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
 </navigation>

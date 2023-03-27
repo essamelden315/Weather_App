@@ -4,4 +4,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="My_Weather">My Weather</string>
     <string name="DegreeSign">°C</string>
+    <string name="AddTOFavButton">Add To Favorite</string>
+    <string name="FavDeleteBtn" >Delete</string>
 </resources>

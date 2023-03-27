@@ -5,14 +5,14 @@ import com.example.weather.model.MyResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ProductClient: RemoteSource {
+class WeatherClient: RemoteSource {
 lateinit var result:MyResponse
 
     companion object {
-        private var myInstance: ProductClient? = null
-        fun getInstance(): ProductClient? {
+        private var myInstance: WeatherClient? = null
+        fun getInstance(): WeatherClient? {
             if (myInstance==null)
-                myInstance = ProductClient()
+                myInstance = WeatherClient()
             return myInstance
         }
     }

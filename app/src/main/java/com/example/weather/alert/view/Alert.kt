@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.weather.R
+import com.example.weather.databinding.FragmentAlertBinding
 
 class Alert : Fragment() {
-
-
+    lateinit var binding: FragmentAlertBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alert, container, false)
+        binding = FragmentAlertBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
 

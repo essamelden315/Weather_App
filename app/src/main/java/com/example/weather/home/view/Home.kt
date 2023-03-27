@@ -9,12 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.weather.Utils.Constants
+import com.example.weather.database.ConcreteLocalSource
+import com.example.weather.database.LocalDataSource
 import com.example.weather.databinding.FragmentHomeBinding
 import com.example.weather.home.viewmodel.HomeViewModel
 import com.example.weather.home.viewmodel.HomeViewModelFactory
 import com.example.weather.model.MyResponse
 import com.example.weather.model.Repository
-import com.example.weather.network.ProductClient
+import com.example.weather.network.WeatherClient
 import com.example.weather.network.RemoteSource
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,20 +36,19 @@ class Home : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         manger = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         manger2 = LinearLayoutManager(context)
-
-
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         var weatherFactory = HomeViewModelFactory(
-            Repository.getInstance(ProductClient.getInstance() as RemoteSource) as Repository,
+            Repository.getInstance(WeatherClient.getInstance() as RemoteSource
+                ,ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource) as Repository,
             requireContext()
         )
         viewModel = ViewModelProvider(this, weatherFactory).get(HomeViewModel::class.java)
         viewModel.getLatitude_Longitude()
-        viewModel.products.observe(viewLifecycleOwner) {
+        viewModel.homeData.observe(viewLifecycleOwner) {
             if (it != null) {
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
