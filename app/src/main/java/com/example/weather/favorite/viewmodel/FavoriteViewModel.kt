@@ -16,7 +16,12 @@ class FavoriteViewModel (private val repo: RepositoryInterface): ViewModel() {
 
      fun getLocalRepo() {
         viewModelScope.launch (Dispatchers.IO){
-            _favData.postValue(repo.showFavData())
+            viewModelScope.launch (Dispatchers.IO){
+                repo.showFavData()?.collect{
+                    _favData.postValue(it)
+                }
+            }
+
         }
     }
     fun insertIntoFav(savedDataFormula: SavedDataFormula){
