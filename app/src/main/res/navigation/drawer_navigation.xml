@@ -30,6 +30,9 @@
             android:id="@+id/fromFavToMap"
             app:destination="@id/mapsFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/fromFavToDetails"
+            app:destination="@id/detailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"
@@ -41,5 +44,17 @@
             app:destination="@id/favorite"
             app:popUpTo="@id/favorite"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.weather.favorite.view.DetailsFragment"
+        android:label="fragment_details"
+        tools:layout="@layout/fragment_details" >
+        <action
+            android:id="@+id/fromDetailsToFav"
+            app:destination="@id/favorite" />
+        <argument
+            android:name="locationData"
+            app:argType="com.example.weather.model.SavedDataFormula" />
     </fragment>
 </navigation>

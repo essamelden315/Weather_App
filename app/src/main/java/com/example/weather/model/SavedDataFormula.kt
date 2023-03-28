@@ -2,6 +2,7 @@ package com.example.weather.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "dataFormula")
 data class SavedDataFormula(
@@ -9,4 +10,4 @@ data class SavedDataFormula(
         var myLongitude:Double,
         @PrimaryKey
         var locationName:String
-)
+): Serializable

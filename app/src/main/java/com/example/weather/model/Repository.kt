@@ -2,6 +2,7 @@ package com.example.weather.model
 
 import com.example.weather.database.LocalDataSource
 import com.example.weather.network.RemoteSource
+import kotlinx.coroutines.flow.Flow
 
 class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):RepositoryInterface {
     var remoteSource:RemoteSource = rs
@@ -19,9 +20,22 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
         return remoteSource.getRetrofitList(lat,lon,exclude,lang,units)
     }
 
-    override suspend fun showFavData(): List<SavedDataFormula>? {
+    override fun getHomeData(): Flow<MyResponse>? {
+        return localSource.getHomeData()
+    }
+
+    override suspend fun insertHomeData(myResponse: MyResponse) {
+        localSource.insertHomeData(myResponse)
+    }
+
+    override suspend fun deleteHomeData(myResponse: MyResponse) {
+        localSource.deleteHomeData(myResponse)
+    }
+
+    override fun showFavData(): Flow<List<SavedDataFormula>>? {
         return localSource.showFavData()
     }
+
 
     override suspend fun insertFavData(savedDataFormula: SavedDataFormula) {
        localSource.insertFavData(savedDataFormula)

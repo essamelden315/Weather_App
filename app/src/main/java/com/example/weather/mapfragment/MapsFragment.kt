@@ -65,7 +65,7 @@ class MapsFragment (): Fragment(){
     }
 
     private fun mapInitialize(){
-        val locationRequest:LocationRequest = LocationRequest()
+        val locationRequest = LocationRequest()
         locationRequest.setInterval(5000)
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         locationRequest.setSmallestDisplacement(14f)
@@ -95,8 +95,10 @@ class MapsFragment (): Fragment(){
     }
 
     private fun goToLatLng(latitude: Double, longitude: Double, fl: Float) {
+        var name = "Unknown !!!"
         var geocoder = Geocoder(requireContext()).getFromLocation(latitude,longitude,1)
-        var name = "${geocoder?.get(0)?.subAdminArea}, ${geocoder?.get(0)?.adminArea}"
+        if(geocoder!!.size>0)
+         name = "${geocoder?.get(0)?.subAdminArea}, ${geocoder?.get(0)?.adminArea}"
         var latlng = LatLng(latitude,longitude)
         var update: CameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng,fl)
         mMap.addMarker(MarkerOptions().position(latlng))
@@ -113,11 +115,6 @@ class MapsFragment (): Fragment(){
             viewModel.insertIntoFav(SavedDataFormula(latitude,longitude,name))
             Log.i("room", "inserted")
             Toast.makeText(requireContext(),"Location is added",Toast.LENGTH_SHORT)
-            /*var navOptions:NavOptions = NavOptions.Builder()
-                .setPopUpTo(R.id.mapsFragment, true)
-                .build()
-            var navController:NavController = Navigation.findNavController(it);
-            navController.navigate(R.id.favorite, null, navOptions)*/
             Navigation.findNavController(it).navigate(R.id.fromMapToFav)
         }
 

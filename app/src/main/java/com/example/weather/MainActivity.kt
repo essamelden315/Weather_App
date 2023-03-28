@@ -3,6 +3,7 @@ package com.example.weather
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -53,10 +54,11 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         appBarConfiguration = AppBarConfiguration(navController.graph,drawerLayout)
         val actionBar = supportActionBar
+        /*actionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        actionBar?.setCustomView(R.layout.action_bar_layout)*/
         actionBar?.setHomeAsUpIndicator(R.drawable.baseline_menu_24)
         actionBar?.setDisplayShowHomeEnabled(true)
         actionBar?.setDisplayHomeAsUpEnabled(true)
-
 
     }
 

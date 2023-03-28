@@ -10,6 +10,7 @@ import com.example.weather.home.view.GetMyLocation
 import com.example.weather.model.MyResponse
 import com.example.weather.model.RepositoryInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repo: RepositoryInterface,private val context: Context): ViewModel() {
@@ -28,6 +29,26 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
         getMyLocation.getLastLocation()
         getMyLocation.location.observe(context as LifecycleOwner){
             getWeatherData(it.get(0),it.get(1))
+        }
+    }
+    fun getHomeDataFromDataBase(){
+        viewModelScope.launch (Dispatchers.IO){
+            repo.getHomeData()?.collect{
+                _homeData.postValue(it)
+            }
+        }
+
+
+    }
+     fun insertHomeDataIntoDataBase(myResponse: MyResponse){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.insertHomeData(myResponse)
+        }
+
+    }
+     fun deleteHomeDaraFromDataBase(myResponse: MyResponse){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteHomeData(myResponse)
         }
     }
 }

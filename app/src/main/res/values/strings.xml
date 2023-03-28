@@ -5,5 +5,5 @@
     <string name="My_Weather">My Weather</string>
     <string name="DegreeSign">°C</string>
     <string name="AddTOFavButton">Add To Favorite</string>
-    <string name="FavDeleteBtn" >Delete</string>
+    <string name="FavDeleteBtn">Delete</string>
 </resources>

@@ -16,4 +16,7 @@ data class Current (
     val windDeg: Long,
     val windGust: Double,
     val weather: List<Weather>,
-)
+){
+    constructor():this(0L , 0L , 0L ,0.0 ,0.0, 0L,0L,0.0,0.0,0L,0L,0.0,0L,0.0, listOf() )
+
+}

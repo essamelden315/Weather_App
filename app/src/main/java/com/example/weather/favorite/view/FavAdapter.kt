@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.SimpleAdapter.ViewBinder
 import android.widget.TextView
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorDestinationBuilder
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FavLayoutBinding
@@ -29,6 +31,10 @@ class FavAdapter (private var favList: List<SavedDataFormula>,val listner: Listn
         holder.viewBinding.favCardDeleteBtn.setOnClickListener {
             listner.deleteDatafromDB(favItem)
             notifyDataSetChanged()
+        }
+        holder.viewBinding.favCardView.setOnClickListener {
+            val action = FavoriteDirections.fromFavToDetails(favItem)
+            Navigation.findNavController(it).navigate(action)
         }
     }
 
