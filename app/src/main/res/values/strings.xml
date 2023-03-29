@@ -6,4 +6,17 @@
     <string name="DegreeSign">°C</string>
     <string name="AddTOFavButton">Add To Favorite</string>
     <string name="FavDeleteBtn">Delete</string>
+    <string name="LocationSettings">Location</string>
+    <string name="LanguageSettings">Language</string>
+    <string name="TempSettings">Tempreture Unit</string>
+    <string name="SpeedUnit">Speed Unit</string>
+    <string name="Sgps">GPS</string>
+    <string name="SMap">Map</string>
+    <string name="EN_Radio">English</string>
+    <string name="AR_Radio">Arabic</string>
+    <string name="Cel_Radio">Celsius</string>
+    <string name="Kel_Radio">Kelvin</string>
+    <string name="Feh_Radio">Fehrenhite</string>
+    <string name="Meter_Radio">Meter/sec</string>
+    <string name="Mile_Radio">Mile/h</string>
 </resources>

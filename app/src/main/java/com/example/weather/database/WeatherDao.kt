@@ -10,7 +10,7 @@ interface WeatherDao {
     @Query("select * from HomeData")
     fun getHomeData():Flow<MyResponse>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHomeData(myResponse: MyResponse)
 
 
