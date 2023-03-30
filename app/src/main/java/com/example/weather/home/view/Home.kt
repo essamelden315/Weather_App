@@ -19,6 +19,7 @@ import com.example.weather.model.Repository
 import com.example.weather.network.NetworkListener
 import com.example.weather.network.WeatherClient
 import com.example.weather.network.RemoteSource
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -62,6 +63,7 @@ class Home : Fragment() {
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
             }
+            Snackbar.make(binding.imageView3,"There is no internet connection", Snackbar.LENGTH_LONG).show()
         }
 
     }
