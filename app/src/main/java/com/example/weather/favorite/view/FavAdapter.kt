@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.SimpleAdapter.ViewBinder
 import android.widget.TextView
+import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorDestinationBuilder
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
 import com.example.weather.databinding.FavLayoutBinding
 import com.example.weather.model.SavedDataFormula
+import com.example.weather.network.NetworkListener
+import com.google.android.material.snackbar.Snackbar
 
 class FavAdapter (private var favList: List<SavedDataFormula>,val listner: ListnerInterface):RecyclerView.Adapter<FavAdapter.myViewHolder>() {
     lateinit var context: Context
@@ -32,10 +35,17 @@ class FavAdapter (private var favList: List<SavedDataFormula>,val listner: Listn
             listner.deleteDatafromDB(favItem)
             notifyDataSetChanged()
         }
-        holder.viewBinding.favCardView.setOnClickListener {
-            val action = FavoriteDirections.fromFavToDetails(favItem)
-            Navigation.findNavController(it).navigate(action)
-        }
+
+            holder.viewBinding.favCardView.setOnClickListener {
+                if(NetworkListener.getConnectivity(context)){
+                val action = FavoriteDirections.fromFavToDetails(favItem)
+                Navigation.findNavController(it).navigate(action)
+                }else{
+                    Snackbar.make(holder.viewBinding.favCardView,"There is no internet connection", Snackbar.LENGTH_LONG).show()
+                }
+            }
+
+
     }
 
     override fun getItemCount(): Int {

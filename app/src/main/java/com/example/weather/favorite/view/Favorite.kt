@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.transaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -20,8 +21,10 @@ import com.example.weather.mapfragment.MapsFragment
 import com.example.weather.model.Repository
 import com.example.weather.model.SavedDataFormula
 import com.example.weather.model.Weather
+import com.example.weather.network.NetworkListener
 import com.example.weather.network.RemoteSource
 import com.example.weather.network.WeatherClient
+import com.google.android.material.snackbar.Snackbar
 
 
 class Favorite : Fragment(),ListnerInterface {
@@ -36,6 +39,7 @@ class Favorite : Fragment(),ListnerInterface {
         activity?.setTitle("Favorite")
         binding=FragmentFavoriteBinding.inflate(inflater, container, false)
         manager = LinearLayoutManager(context)
+
         val favFactory =FavoriteViewModelFactory(
             Repository.getInstance(WeatherClient.getInstance() as RemoteSource
                 ,ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource) as Repository
@@ -48,7 +52,10 @@ class Favorite : Fragment(),ListnerInterface {
         binding.FavRV.adapter = favAdapter
         binding.FavRV.layoutManager = manager
         binding.favFAB.setOnClickListener() {
+            if(NetworkListener.getConnectivity(requireContext()))
             Navigation.findNavController(it).navigate(R.id.fromFavToMap)
+            else
+                Snackbar.make(binding.favFAB,"There is no internet connection",Snackbar.LENGTH_LONG).show()
         }
         return binding.root
     }
