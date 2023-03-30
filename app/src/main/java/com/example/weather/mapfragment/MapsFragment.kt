@@ -98,13 +98,15 @@ class MapsFragment (): Fragment(){
         var name = "Unknown !!!"
         var geocoder = Geocoder(requireContext()).getFromLocation(latitude,longitude,1)
         if(geocoder!!.size>0)
-         name = "${geocoder?.get(0)?.subAdminArea}, ${geocoder?.get(0)?.adminArea}"
+         name = "${geocoder?.get(0)?.locality}, ${geocoder?.get(0)?.adminArea}, ${geocoder?.get(0)?.countryName}"
+        Log.i("mapEssam", ""+geocoder)
         var latlng = LatLng(latitude,longitude)
         var update: CameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng,fl)
         mMap.addMarker(MarkerOptions().position(latlng))
         mMap.animateCamera(update)
 
         binding.mapAddToFav.setOnClickListener{
+
             val favFactory = FavoriteViewModelFactory(
                 Repository.getInstance(
                     WeatherClient.getInstance() as RemoteSource

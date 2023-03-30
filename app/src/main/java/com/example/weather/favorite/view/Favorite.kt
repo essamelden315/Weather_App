@@ -29,7 +29,6 @@ class Favorite : Fragment(),ListnerInterface {
     lateinit var favAdapter: FavAdapter
     lateinit var manager: LinearLayoutManager
     lateinit var viewModel:FavoriteViewModel
-    lateinit var myList:List<SavedDataFormula>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

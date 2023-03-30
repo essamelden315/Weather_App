@@ -16,6 +16,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="3dp"
         android:alpha="0.8"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toStartOf="@+id/cardView3"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
-            android:layout_marginTop="40dp">
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="10dp">
 
             <RadioButton
                 android:id="@+id/gpsRadio"
@@ -60,6 +63,8 @@
         android:layout_marginStart="1dp"
         android:layout_marginEnd="10dp"
         android:alpha="0.8"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
-            android:layout_marginTop="40dp">
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="10dp">
 
             <RadioButton
                 android:id="@+id/EN_Radio"
@@ -103,6 +109,8 @@
         android:layout_marginStart="1dp"
         android:layout_marginEnd="10dp"
         android:alpha="0.8"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,7 +122,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp">
 
             <RadioButton
                 android:id="@+id/Cel_Radio"
@@ -157,6 +166,8 @@
         android:layout_marginTop="22dp"
         android:layout_marginEnd="3dp"
         android:alpha="0.8"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toStartOf="@+id/cardView4"
         app:layout_constraintStart_toStartOf="parent"
@@ -167,7 +178,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginTop="40dp">
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="10dp">
 
             <RadioButton
                 android:id="@+id/Meter_Radio"

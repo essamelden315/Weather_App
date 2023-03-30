@@ -19,4 +19,14 @@
     <string name="Feh_Radio">Fehrenhite</string>
     <string name="Meter_Radio">Meter/sec</string>
     <string name="Mile_Radio">Mile/h</string>
+    <string name="HomePressure">Pressure</string>
+    <string name="HomeHumidity">Humidity</string>
+    <string name="HomeWind">Wind</string>
+    <string name="HomeUltraVilot">UltraVilot</string>
+    <string name="HomeClouds">Clouds</string>
+    <string name="HomeVisibility">Visibility</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_favorites">Favorites</string>
+    <string name="menu_alerts">Alerts</string>
+    <string name="menu_settings">Settings</string>
 </resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">الطقس</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="My_Weather">طقسي</string>
+    <string name="DegreeSign">°C</string>
+    <string name="AddTOFavButton">أضف الي المفضلة</string>
+    <string name="FavDeleteBtn">اسمح</string>
+    <string name="LocationSettings">الموقع</string>
+    <string name="LanguageSettings">اللغة</string>
+    <string name="TempSettings">وحده قياس الحراره</string>
+    <string name="SpeedUnit">وحده قياس السرعه</string>
+    <string name="Sgps">نظام تحديد المواقع</string>
+    <string name="SMap">الخريطة</string>
+    <string name="EN_Radio">انجليزي</string>
+    <string name="AR_Radio">لغتنا العربية</string>
+    <string name="Cel_Radio">سيليزيوس</string>
+    <string name="Kel_Radio">كيلفن</string>
+    <string name="Feh_Radio">فهرينهايت</string>
+    <string name="Meter_Radio">متر \\ ثانيه</string>
+    <string name="Mile_Radio">ميل \\ ساعه</string>
+    <string name="HomePressure">الضغط</string>
+    <string name="HomeHumidity">الرطوبه</string>
+    <string name="HomeWind">سرعه الهواء</string>
+    <string name="HomeUltraVilot">الاشعه فوق البنفسجه</string>
+    <string name="HomeClouds">الحسب</string>
+    <string name="HomeVisibility">الرؤيه</string>
+    <string name="menu_home">الرئيسية</string>
+    <string name="menu_favorites">المفضلة</string>
+    <string name="menu_alerts">التنبيهات</string>
+    <string name="menu_settings">الأعدادات</string>
+</resources>
