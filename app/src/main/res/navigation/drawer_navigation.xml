@@ -49,7 +49,7 @@
             app:popUpTo="@id/favorite"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_mapsFragment_to_home2"
+            android:id="@+id/fromMapToHome"
             app:destination="@id/home2" />
     </fragment>
     <fragment

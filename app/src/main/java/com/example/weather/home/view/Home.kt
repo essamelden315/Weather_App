@@ -25,7 +25,6 @@ import com.example.weather.network.WeatherClient
 import com.example.weather.utilities.FacilitateWork
 import com.example.weather.utilities.TimeConverter
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
 
 class Home : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -35,12 +34,12 @@ class Home : Fragment() {
     private lateinit var manger2: LinearLayoutManager
     private lateinit var viewModel: HomeViewModel
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var lang:String
-    private lateinit var location:String
-    private lateinit var speed:String
-    private lateinit var temp:String
-    private var units:String=""
-    private var degreeType:String=""
+    private lateinit var lang: String
+    private lateinit var location: String
+    private lateinit var speed: String
+    private lateinit var temp: String
+    private var units: String = ""
+    private var degreeType: String = ""
     private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,12 +47,12 @@ class Home : Fragment() {
     ): View? {
         activity?.setTitle(R.string.menu_home)
         sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
-        lang=sharedPref.getString("language","not found").toString()
-        location=sharedPref.getString("location","not found").toString()
-        speed=sharedPref.getString("speed","not found").toString()
-        temp=sharedPref.getString("temp","not found").toString()
-        units = FacilitateWork.getTempUnitAndSign(temp,requireActivity()).first
-        degreeType = FacilitateWork.getTempUnitAndSign(temp,requireActivity()).second
+        lang = sharedPref.getString("language", "en").toString()
+        location = sharedPref.getString("location", "gps").toString()
+        speed = sharedPref.getString("speed", "meter").toString()
+        temp = sharedPref.getString("temp", "kel").toString()
+        units = FacilitateWork.getTempUnitAndSign(temp, requireActivity()).first
+        degreeType = FacilitateWork.getTempUnitAndSign(temp, requireActivity()).second
         progressDialog = ProgressDialog(context)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         manger = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -63,33 +62,43 @@ class Home : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        FacilitateWork.locale(sharedPref.getString("language","en").toString(),resources)
+        FacilitateWork.locale(lang, resources)
         progressDialog.setMessage("Loading...")
         progressDialog.show()
         var weatherFactory = HomeViewModelFactory(
-            Repository.getInstance(WeatherClient.getInstance() as RemoteSource
-                ,ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource) as Repository,
-            requireContext()
+            Repository.getInstance(
+                WeatherClient.getInstance() as RemoteSource,
+                ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource
+            ) as Repository, requireContext()
         )
         viewModel = ViewModelProvider(this, weatherFactory).get(HomeViewModel::class.java)
-        if (NetworkListener.getConnectivity(requireContext())){
-
-            viewModel.getLatitude_Longitude(lang,units)
+        if (NetworkListener.getConnectivity(requireContext())) {
+            if(location =="map"){
+                val sp = requireActivity().getSharedPreferences("mapData", Context.MODE_PRIVATE)
+                val lat = sp.getString("lat","${0.0}")?.toDouble() as Double
+                val lon = sp.getString("lon","${0.0}")?.toDouble() as Double
+                viewModel.getWeatherData(lat ,lon ,lang ,units)
+            }else
+            viewModel.getLatitude_Longitude(lang, units)
             viewModel.homeData.observe(viewLifecycleOwner) {
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
                 progressDialog.dismiss()
                 viewModel.insertHomeDataIntoDataBase(it)
             }
-        }else{
+        } else {
 
             viewModel.getHomeDataFromDataBase()
-            viewModel.homeData.observe(viewLifecycleOwner){
+            viewModel.homeData.observe(viewLifecycleOwner) {
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
             }
             progressDialog.dismiss()
-            Snackbar.make(binding.imageView3,"There is no internet connection", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(
+                binding.imageView3,
+                "There is no internet connection",
+                Snackbar.LENGTH_LONG
+            ).show()
         }
 
     }
@@ -109,6 +118,7 @@ class Home : Fragment() {
         binding.ultravilotValue.text = it.current?.uvi.toString()
         binding.windValue.text = "${it.current?.wind_speed} m/s"
     }
+
     private fun setHomeScreenAdapter(it: MyResponse) {
         hourAdapter = HoursAdapter(it.hourly)
         dayAdapter = DailyAdapter(it.daily)

@@ -44,10 +44,10 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
-        lang=sharedPref.getString("language","not found").toString()
-        location=sharedPref.getString("location","not found").toString()
-        speed=sharedPref.getString("speed","not found").toString()
-        temp=sharedPref.getString("temp","not found").toString()
+        lang=sharedPref.getString("language","en").toString()
+        location=sharedPref.getString("location","gps").toString()
+        speed=sharedPref.getString("speed","meter").toString()
+        temp=sharedPref.getString("temp","kel").toString()
         units = FacilitateWork.getTempUnitAndSign(temp,requireActivity()).first
         degreeType = FacilitateWork.getTempUnitAndSign(temp,requireActivity()).second
         detailsBinding = FragmentDetailsBinding.inflate(inflater, container, false)

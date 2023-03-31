@@ -24,7 +24,7 @@ class DetailsHoursAdapter (private val hours: List<Current>) : RecyclerView.Adap
         hourBinding = HourLayoutBinding.inflate(inflater, parent, false)
         context = parent.context
         sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
-        temp = sharedPref.getString("temp","not found").toString()
+        temp = sharedPref.getString("temp","kel").toString()
         return MyViewHolder(hourBinding)
     }
 

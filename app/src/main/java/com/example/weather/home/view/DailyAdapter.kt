@@ -24,7 +24,7 @@ class DailyAdapter(private val days:List<Daily>):RecyclerView.Adapter<DailyAdapt
         dailyBinding = DailyLayoutBinding.inflate(inflater,parent,false)
         context=parent.context
         sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
-        temp = sharedPref.getString("temp","not found").toString()
+        temp = sharedPref.getString("temp","kel").toString()
         return MyViewHolder(dailyBinding)
     }
 

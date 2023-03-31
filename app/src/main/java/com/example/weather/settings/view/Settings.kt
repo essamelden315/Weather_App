@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.example.weather.R
 import com.example.weather.utilities.FacilitateWork
 import com.example.weather.databinding.FragmentSettingsBinding
@@ -51,7 +52,7 @@ class Settings : Fragment() {
                 edit.putString("location","map")
                 edit.commit()
                 settingsBinding.mapRadio.isChecked = true
-                //Navigation.findNavController(group).navigate(R.id.fromSettingsToMap)
+                Navigation.findNavController(group).navigate(R.id.fromSettingsToMap)
             }
         }
 
@@ -92,20 +93,20 @@ class Settings : Fragment() {
     }
 
     private fun setChoises() {
-        when(sharedPref.getString("temp","notFound")){
+        when(sharedPref.getString("temp","kel")){
             "cel" ->settingsBinding.CelRadio.isChecked = true
             "kel" ->settingsBinding.KelRadio.isChecked = true
             else  ->settingsBinding.FehRadio.isChecked = true
         }
-        when(sharedPref.getString("language","notFound")){
+        when(sharedPref.getString("language","en")){
             "en" ->settingsBinding.ENRadio.isChecked = true
             else ->settingsBinding.ARRadio.isChecked = true
         }
-        when(sharedPref.getString("speed","notFound")){
+        when(sharedPref.getString("speed","meter")){
             "meter" ->settingsBinding.MeterRadio.isChecked = true
             else    ->settingsBinding.MileRadio.isChecked = true
         }
-        when(sharedPref.getString("location","notFound")){
+        when(sharedPref.getString("location","gps")){
             "gps" ->settingsBinding.gpsRadio.isChecked = true
             else  ->settingsBinding.mapRadio.isChecked = true
         }
