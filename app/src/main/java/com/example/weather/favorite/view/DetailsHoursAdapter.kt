@@ -34,7 +34,7 @@ class DetailsHoursAdapter (private val hours: List<Current>) : RecyclerView.Adap
         val sign = FacilitateWork.getTempUnitAndSign(temp,context as FragmentActivity).second
         Glide.with(context).load(url).into(holder.viewBinding.hourImage)
         holder.viewBinding.hourDate.text = TimeConverter.convertToDayHours(hour.dt)
-        holder.viewBinding.hourDegree.text = "${hour.temp.toInt()} ${sign}"
+        holder.viewBinding.hourDegree.text = "${hour.temp.toInt()}${sign}"
     }
 
     override fun getItemCount(): Int {

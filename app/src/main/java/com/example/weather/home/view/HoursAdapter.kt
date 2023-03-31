@@ -35,7 +35,7 @@ class HoursAdapter(private val hours: List<Current>) : RecyclerView.Adapter<Hour
         val url = "https://openweathermap.org/img/wn/${hour.weather.get(0).icon}@2x.png"
         Glide.with(context).load(url).into(holder.viewBinding.hourImage)
         holder.viewBinding.hourDate.text = TimeConverter.convertToDayHours(hour.dt)
-        holder.viewBinding.hourDegree.text = "${hour.temp.toInt()} ${sign}"
+        holder.viewBinding.hourDegree.text = "${hour.temp.toInt()}${sign}"
     }
 
     override fun getItemCount(): Int {

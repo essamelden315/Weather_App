@@ -78,9 +78,12 @@ class Home : Fragment() {
                 val lat = sp.getString("lat","${0.0}")?.toDouble() as Double
                 val lon = sp.getString("lon","${0.0}")?.toDouble() as Double
                 viewModel.getWeatherData(lat ,lon ,lang ,units)
-            }else
-            viewModel.getLatitude_Longitude(lang, units)
+            }else {
+
+                viewModel.getLatitude_Longitude(lang, units)
+            }
             viewModel.homeData.observe(viewLifecycleOwner) {
+
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
                 progressDialog.dismiss()
@@ -104,6 +107,7 @@ class Home : Fragment() {
     }
 
     private fun setHomeScreenData(it: MyResponse) {
+        progressDialog.show()
         binding.dateTxt.text = TimeConverter.convertHomeDate(it.current?.dt)
         binding.countryTxt.text = it.timezone
         binding.degeeTxt.text = it.current?.temp?.toInt().toString()

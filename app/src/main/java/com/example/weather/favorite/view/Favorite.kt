@@ -1,5 +1,7 @@
 package com.example.weather.favorite.view
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -52,8 +54,14 @@ class Favorite : Fragment(),ListnerInterface {
         binding.FavRV.adapter = favAdapter
         binding.FavRV.layoutManager = manager
         binding.favFAB.setOnClickListener() {
-            if(NetworkListener.getConnectivity(requireContext()))
-            Navigation.findNavController(it).navigate(R.id.fromFavToMap)
+            if(NetworkListener.getConnectivity(requireContext())) {
+                var sharedPref = context?.getSharedPreferences("settings", Context.MODE_PRIVATE)
+                var edit = sharedPref?.edit()
+                edit?.putString("location","favmap")
+                edit?.commit()
+
+                Navigation.findNavController(it).navigate(R.id.fromFavToMap)
+            }
             else
                 Snackbar.make(binding.favFAB,"There is no internet connection",Snackbar.LENGTH_LONG).show()
         }

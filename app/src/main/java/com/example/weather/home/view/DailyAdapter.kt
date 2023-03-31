@@ -39,8 +39,8 @@ class DailyAdapter(private val days:List<Daily>):RecyclerView.Adapter<DailyAdapt
         Glide.with(context).load(url).into(holder.viewBinding.dayImg)
         holder.viewBinding.dayDate.text = TimeConverter.convertToWeekDays(day.dt)
         holder.viewBinding.dayDescription.text = day.weather.get(0).description
-        holder.viewBinding.dayMinDegree.text = "${day.temp.min.toInt()} ${sign}"
-        holder.viewBinding.dayMaxDegree.text = "${day.temp.max.toInt()} ${sign}"
+        holder.viewBinding.dayMinDegree.text = "${day.temp.min.toInt()}${sign}"
+        holder.viewBinding.dayMaxDegree.text = "${day.temp.max.toInt()}${sign}"
     }
 
     class MyViewHolder(val viewBinding: DailyLayoutBinding):RecyclerView.ViewHolder(viewBinding.root)
