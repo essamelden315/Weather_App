@@ -1,47 +1,114 @@
 package com.example.weather.settings.view
 
-import android.content.res.Configuration
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.weather.R
+import com.example.weather.utilities.FacilitateWork
 import com.example.weather.databinding.FragmentSettingsBinding
-import java.util.*
-
 class Settings : Fragment() {
 
     lateinit var settingsBinding: FragmentSettingsBinding
+    lateinit var sharedPref:SharedPreferences
+    lateinit var edit:SharedPreferences.Editor
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.setTitle("Settings")
+        activity?.setTitle(R.string.menu_settings)
+        //shared preference initialization
+        sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
+        edit = sharedPref.edit()
+
         settingsBinding = FragmentSettingsBinding.inflate(inflater, container, false)
+        setChoises()
         settingsBinding.LanguageGroup.setOnCheckedChangeListener { group, checkedId ->
-            var item = group.checkedRadioButtonId
-            if (item == R.id.AR_Radio)
+            if (group.checkedRadioButtonId == R.id.AR_Radio)
             {
-                val locale = Locale("ar")
-                Locale.setDefault(locale)
-                val config = Configuration()
-                config.locale = locale
-                resources.updateConfiguration(config, resources.displayMetrics)
-                settingsBinding.ARRadio.isChecked = true
+                edit.putString("language","ar")
+                edit.commit()
+                FacilitateWork.locale("ar",resources)
             }
             else {
-                Toast.makeText(requireContext(), "English", Toast.LENGTH_SHORT).show()
-                val locale = Locale("en")
-                Locale.setDefault(locale)
-                val config = Configuration()
-                config.locale = locale
-                resources.updateConfiguration(config, resources.displayMetrics)
-                settingsBinding.ENRadio.isChecked = true
+                edit.putString("language","en")
+                edit.commit()
+                FacilitateWork.locale("en",resources)
+
             }
         }
+        settingsBinding.LocationGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (group.checkedRadioButtonId == R.id.gpsRadio)
+            {
+                edit.putString("location","gps")
+                edit.commit()
+                settingsBinding.gpsRadio.isChecked = true
+            }
+            else {
+                edit.putString("location","map")
+                edit.commit()
+                settingsBinding.mapRadio.isChecked = true
+                //Navigation.findNavController(group).navigate(R.id.fromSettingsToMap)
+            }
+        }
+
+        settingsBinding.TempGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (group.checkedRadioButtonId == R.id.Cel_Radio)
+            {
+                edit.putString("temp","cel")
+                edit.commit()
+                settingsBinding.CelRadio.isChecked = true
+            }
+            else if(group.checkedRadioButtonId == R.id.Kel_Radio){
+                edit.putString("temp","kel")
+                edit.commit()
+                settingsBinding.KelRadio.isChecked = true
+            }
+            else{
+                edit.putString("temp","feh")
+                edit.commit()
+                settingsBinding.FehRadio.isChecked = true
+            }
+        }
+
+        settingsBinding.SpeedGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (group.checkedRadioButtonId == R.id.Meter_Radio)
+            {
+                edit.putString("speed","meter")
+                edit.commit()
+                settingsBinding.MeterRadio.isChecked = true
+            }
+            else {
+                edit.putString("speed","mile")
+                edit.commit()
+                settingsBinding.MileRadio.isChecked = true
+            }
+
+        }
         return settingsBinding.root
+    }
+
+    private fun setChoises() {
+        when(sharedPref.getString("temp","notFound")){
+            "cel" ->settingsBinding.CelRadio.isChecked = true
+            "kel" ->settingsBinding.KelRadio.isChecked = true
+            else  ->settingsBinding.FehRadio.isChecked = true
+        }
+        when(sharedPref.getString("language","notFound")){
+            "en" ->settingsBinding.ENRadio.isChecked = true
+            else ->settingsBinding.ARRadio.isChecked = true
+        }
+        when(sharedPref.getString("speed","notFound")){
+            "meter" ->settingsBinding.MeterRadio.isChecked = true
+            else    ->settingsBinding.MileRadio.isChecked = true
+        }
+        when(sharedPref.getString("location","notFound")){
+            "gps" ->settingsBinding.gpsRadio.isChecked = true
+            else  ->settingsBinding.mapRadio.isChecked = true
+        }
     }
 
 }

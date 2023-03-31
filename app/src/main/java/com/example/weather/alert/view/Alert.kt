@@ -15,6 +15,7 @@ class Alert : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.setTitle(R.string.menu_alerts)
         binding = FragmentAlertBinding.inflate(inflater,container,false)
         return binding.root
     }

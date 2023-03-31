@@ -1,5 +1,8 @@
 package com.example.weather.home.view
 
+import android.app.ProgressDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.weather.Utils.Constants
+import com.example.weather.R
 import com.example.weather.database.ConcreteLocalSource
 import com.example.weather.database.LocalDataSource
 import com.example.weather.databinding.FragmentHomeBinding
@@ -17,25 +20,41 @@ import com.example.weather.home.viewmodel.HomeViewModelFactory
 import com.example.weather.model.MyResponse
 import com.example.weather.model.Repository
 import com.example.weather.network.NetworkListener
-import com.example.weather.network.WeatherClient
 import com.example.weather.network.RemoteSource
+import com.example.weather.network.WeatherClient
+import com.example.weather.utilities.FacilitateWork
+import com.example.weather.utilities.TimeConverter
 import com.google.android.material.snackbar.Snackbar
-import java.text.SimpleDateFormat
 import java.util.*
 
 class Home : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var hourAdapter: HoursAdapter
     private lateinit var dayAdapter: DailyAdapter
-    lateinit var manger: LinearLayoutManager
-    lateinit var manger2: LinearLayoutManager
-    lateinit var viewModel: HomeViewModel
-
+    private lateinit var manger: LinearLayoutManager
+    private lateinit var manger2: LinearLayoutManager
+    private lateinit var viewModel: HomeViewModel
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var lang:String
+    private lateinit var location:String
+    private lateinit var speed:String
+    private lateinit var temp:String
+    private var units:String=""
+    private var degreeType:String=""
+    private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.setTitle("Home")
+        activity?.setTitle(R.string.menu_home)
+        sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
+        lang=sharedPref.getString("language","not found").toString()
+        location=sharedPref.getString("location","not found").toString()
+        speed=sharedPref.getString("speed","not found").toString()
+        temp=sharedPref.getString("temp","not found").toString()
+        units = FacilitateWork.getTempUnitAndSign(temp,requireActivity()).first
+        degreeType = FacilitateWork.getTempUnitAndSign(temp,requireActivity()).second
+        progressDialog = ProgressDialog(context)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         manger = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         manger2 = LinearLayoutManager(context)
@@ -44,6 +63,9 @@ class Home : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        FacilitateWork.locale(sharedPref.getString("language","en").toString(),resources)
+        progressDialog.setMessage("Loading...")
+        progressDialog.show()
         var weatherFactory = HomeViewModelFactory(
             Repository.getInstance(WeatherClient.getInstance() as RemoteSource
                 ,ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource) as Repository,
@@ -51,28 +73,32 @@ class Home : Fragment() {
         )
         viewModel = ViewModelProvider(this, weatherFactory).get(HomeViewModel::class.java)
         if (NetworkListener.getConnectivity(requireContext())){
-            viewModel.getLatitude_Longitude()
+
+            viewModel.getLatitude_Longitude(lang,units)
             viewModel.homeData.observe(viewLifecycleOwner) {
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
+                progressDialog.dismiss()
                 viewModel.insertHomeDataIntoDataBase(it)
             }
         }else{
+
             viewModel.getHomeDataFromDataBase()
             viewModel.homeData.observe(viewLifecycleOwner){
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
             }
+            progressDialog.dismiss()
             Snackbar.make(binding.imageView3,"There is no internet connection", Snackbar.LENGTH_LONG).show()
         }
 
     }
 
     private fun setHomeScreenData(it: MyResponse) {
-        binding.dateTxt.text = convertDate(it.current?.dt)
+        binding.dateTxt.text = TimeConverter.convertHomeDate(it.current?.dt)
         binding.countryTxt.text = it.timezone
         binding.degeeTxt.text = it.current?.temp?.toInt().toString()
-        binding.degreeType.text = Constants.cel
+        binding.degreeType.text = degreeType
         binding.weatherStatus.text = it.current?.weather?.get(0)?.description
         val url = "https://openweathermap.org/img/wn/${it.current?.weather?.get(0)?.icon}@2x.png"
         Glide.with(requireContext()).load(url).into(binding.weatherImage)
@@ -91,13 +117,6 @@ class Home : Fragment() {
         binding.daysRV.adapter = dayAdapter
         binding.daysRV.layoutManager = manger2
     }
-    fun convertDate(time: Long?): String {
-        var simpleDate = SimpleDateFormat("dd-MM-yyyy")
-        var currentDate = simpleDate.format(time?.times(1000))
-        var date1: Date = simpleDate.parse(currentDate)
-        val split = date1.toString().split(" ")
-        var myDate = "${split[0]},${split[2]} ${split[1]} "
-        return myDate
-    }
+
 
 }

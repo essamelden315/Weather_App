@@ -3,7 +3,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="My_Weather">My Weather</string>
-    <string name="DegreeSign">°C</string>
+    <string name="CelSign">°C</string>
+    <string name="KelSign">°K</string>
+    <string name="FehSign">°F</string>
     <string name="AddTOFavButton">Add To Favorite</string>
     <string name="FavDeleteBtn">Delete</string>
     <string name="LocationSettings">Location</string>
@@ -17,8 +19,8 @@
     <string name="Cel_Radio">Celsius</string>
     <string name="Kel_Radio">Kelvin</string>
     <string name="Feh_Radio">Fehrenhite</string>
-    <string name="Meter_Radio">Meter/sec</string>
-    <string name="Mile_Radio">Mile/h</string>
+    <string name="Meter_Radio">m/s</string>
+    <string name="Mile_Radio">mi/h</string>
     <string name="HomePressure">Pressure</string>
     <string name="HomeHumidity">Humidity</string>
     <string name="HomeWind">Wind</string>
@@ -29,4 +31,6 @@
     <string name="menu_favorites">Favorites</string>
     <string name="menu_alerts">Alerts</string>
     <string name="menu_settings">Settings</string>
+    <string name="HectroPascal">hpa</string>
+    <string name="visionM">m</string>
 </resources>

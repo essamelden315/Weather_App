@@ -18,19 +18,18 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
     private var _homeData: MutableLiveData<MyResponse> = MutableLiveData<MyResponse>()
     val homeData: LiveData<MyResponse> = _homeData
 
-
-    fun getWeatherData(lati:Double, longi:Double) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _homeData.postValue(repo.getRetrofitWeatherData(lati,longi,"minutely","en","metric"))
-        }
-
-    }
-     fun getLatitude_Longitude(){
+     fun getLatitude_Longitude(language:String,unit:String){
         var getMyLocation:GetMyLocation = GetMyLocation(context)
         getMyLocation.getLastLocation()
         getMyLocation.location.observe(context as LifecycleOwner){
-            getWeatherData(it.get(0),it.get(1))
+            getWeatherData(it.get(0),it.get(1),language,unit)
         }
+    }
+     fun getWeatherData(lati:Double, longi:Double,language:String,unit:String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _homeData.postValue(repo.getRetrofitWeatherData(lati,longi,"minutely",language,unit))
+        }
+
     }
     fun getHomeDataFromDataBase(){
         viewModelScope.launch (Dispatchers.IO){

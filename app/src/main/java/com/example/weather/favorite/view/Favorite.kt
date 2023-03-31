@@ -36,7 +36,7 @@ class Favorite : Fragment(),ListnerInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.setTitle("Favorite")
+        activity?.setTitle(R.string.menu_favorites)
         binding=FragmentFavoriteBinding.inflate(inflater, container, false)
         manager = LinearLayoutManager(context)
 

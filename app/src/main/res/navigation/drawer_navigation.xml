@@ -20,7 +20,11 @@
         android:id="@+id/settings"
         android:name="com.example.weather.settings.view.Settings"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/fromSettingsToMap"
+            app:destination="@id/mapsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favorite"
         android:name="com.example.weather.favorite.view.Favorite"
@@ -44,6 +48,9 @@
             app:destination="@id/favorite"
             app:popUpTo="@id/favorite"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_mapsFragment_to_home2"
+            app:destination="@id/home2" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
