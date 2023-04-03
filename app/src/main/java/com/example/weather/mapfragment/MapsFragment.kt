@@ -23,6 +23,7 @@ import com.example.weather.favorite.viewmodel.FavoriteViewModel
 import com.example.weather.favorite.viewmodel.FavoriteViewModelFactory
 import com.example.weather.model.Repository
 import com.example.weather.model.SavedDataFormula
+import com.example.weather.network.NetworkListener
 import com.example.weather.network.RemoteSource
 import com.example.weather.network.WeatherClient
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -31,6 +32,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 
 
 class MapsFragment() : Fragment() {
@@ -42,12 +44,23 @@ class MapsFragment() : Fragment() {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var edit: SharedPreferences.Editor
     private lateinit var location: String
+    private lateinit var fromFav: String
+    var flag = false
+
     private val callback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
         mMap.setOnMapClickListener {
-            mMap.clear()
-            mMap.addMarker(MarkerOptions().position(it))
-            goToLatLng(it.latitude, it.longitude, 16f)
+            if(NetworkListener.getConnectivity(requireContext())){
+                mMap.clear()
+                mMap.addMarker(MarkerOptions().position(it))
+                goToLatLng(it.latitude, it.longitude, 10f)
+            }else
+                Snackbar.make(
+                    binding.searchEdt,
+                    "There is no internet connection",
+                    Snackbar.LENGTH_LONG
+                ).show()
+
         }
     }
 
@@ -56,10 +69,20 @@ class MapsFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
         location = sharedPref.getString("location", "gps").toString()
+        fromFav = sharedPref.getString("fav","not").toString()
+        edit = sharedPref.edit()
+        edit.putBoolean("mapFromDialog",false)
+        edit.commit()
+        if(fromFav == "not") flag =true
         binding = FragmentMapsBinding.inflate(inflater, container, false)
-        if (location == "map") binding.mapAddToFav.text = "Set Location"
+        if (location == "map" && flag) {
+            binding.mapAddToFav.text = "Set Location"
+        }else
+        { edit.putString("fav","not")
+            edit.commit()}
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(callback)
         mapInitialize()
@@ -77,8 +100,15 @@ class MapsFragment() : Fragment() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
                 || event.action == KeyEvent.ACTION_DOWN || event.action == KeyEvent.KEYCODE_ENTER
             ) {
-                if (!binding.searchEdt.text.isNullOrEmpty())
+                if (!binding.searchEdt.text.isNullOrEmpty() && NetworkListener.getConnectivity(requireContext()))
                     goToSearchLocation()
+                else{
+                    if(!NetworkListener.getConnectivity(requireContext()))
+                        Snackbar.make(binding.searchEdt, "There is no internet connection", Snackbar.LENGTH_LONG).show()
+                    if(binding.searchEdt.text.isNullOrEmpty())
+                        Snackbar.make(binding.searchEdt, "Search bar is empty. write a location", Snackbar.LENGTH_LONG).show()
+                }
+
             }
 
             false
@@ -92,7 +122,7 @@ class MapsFragment() : Fragment() {
         var list = Geocoder(requireContext()).getFromLocationName(searchLocation, 1)
         if (list != null && list.size > 0) {
             var address: Address = list.get(0)
-            goToLatLng(address.latitude, address.longitude, 16f)
+            goToLatLng(address.latitude, address.longitude, 10f)
         }
 
     }
@@ -101,34 +131,37 @@ class MapsFragment() : Fragment() {
         var name = "Unknown !!!"
         var geocoder = Geocoder(requireContext()).getFromLocation(latitude, longitude, 1)
         if (geocoder!!.size > 0)
-            name =
-                "${geocoder?.get(0)?.locality}, ${geocoder?.get(0)?.adminArea}, ${geocoder?.get(0)?.countryName}"
-        Log.i("mapEssam", "" + geocoder)
+            name = "${geocoder?.get(0)?.locality}, ${geocoder?.get(0)?.adminArea}, ${geocoder?.get(0)?.countryName}"
         var latlng = LatLng(latitude, longitude)
         var update: CameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, fl)
         mMap.addMarker(MarkerOptions().position(latlng))
         mMap.animateCamera(update)
 
         binding.mapAddToFav.setOnClickListener {
-            if (location == "map") {
-                saveMapLatLon(latitude, longitude)
-                Navigation.findNavController(it).navigate(R.id.fromMapToHome)
-            } else {
-                val favFactory = FavoriteViewModelFactory(
-                    Repository.getInstance(
-                        WeatherClient.getInstance() as RemoteSource,
-                        ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource
-                    ) as Repository
-                )
-                viewModel = ViewModelProvider(
-                    requireActivity(),
-                    favFactory
-                ).get(FavoriteViewModel::class.java)
-                viewModel.insertIntoFav(SavedDataFormula(latitude, longitude, name))
-                Log.i("room", "inserted")
-                Toast.makeText(requireContext(), "Location is added", Toast.LENGTH_SHORT)
-                Navigation.findNavController(it).navigate(R.id.fromMapToFav)
-            }
+            if(NetworkListener.getConnectivity(requireContext())){
+                if (location == "map" && fromFav == "not") {
+                    saveMapLatLon(latitude, longitude)
+                    Navigation.findNavController(it).navigate(R.id.fromMapToHome)
+                } else {
+                    edit.putString("fav", "not")
+                    edit.commit()
+                    val favFactory = FavoriteViewModelFactory(
+                        Repository.getInstance(
+                            WeatherClient.getInstance() as RemoteSource,
+                            ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource
+                        ) as Repository
+                    )
+                    viewModel = ViewModelProvider(
+                        requireActivity(),
+                        favFactory
+                    ).get(FavoriteViewModel::class.java)
+                    viewModel.insertIntoFav(SavedDataFormula(latitude, longitude, name))
+                    Log.i("room", "inserted")
+                    Toast.makeText(requireContext(), "Location is added", Toast.LENGTH_SHORT).show()
+                    Navigation.findNavController(it).navigate(R.id.fromMapToFav)
+                }
+            }else
+                Snackbar.make(binding.searchEdt, "There is no internet connection", Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -139,5 +172,6 @@ class MapsFragment() : Fragment() {
         edit.putString("lon", "$longitude")
         edit.commit()
     }
+
 
 }

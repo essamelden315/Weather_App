@@ -1,14 +1,19 @@
 package com.example.weather.home.view
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.weather.R
@@ -38,23 +43,20 @@ class Home : Fragment() {
     private lateinit var location: String
     private lateinit var speed: String
     private lateinit var temp: String
-    private var units: String = ""
-    private var degreeType: String = ""
+    private lateinit var units: String
+    private lateinit var degreeType: String
+    private var mapDialog: Boolean = false
     private lateinit var progressDialog: ProgressDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.setTitle(R.string.menu_home)
-        sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
-        lang = sharedPref.getString("language", "en").toString()
-        location = sharedPref.getString("location", "gps").toString()
-        speed = sharedPref.getString("speed", "meter").toString()
-        temp = sharedPref.getString("temp", "kel").toString()
-        units = FacilitateWork.getTempUnitAndSign(temp, requireActivity()).first
-        degreeType = FacilitateWork.getTempUnitAndSign(temp, requireActivity()).second
-        progressDialog = ProgressDialog(context)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        activity?.setTitle(R.string.menu_home)
+        openAndGetDataFromSharedPrefrence()
+        if(mapDialog)
+            findNavController().navigate(R.id.fromHomeToMap)
+        progressDialog = ProgressDialog(context)
         manger = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         manger2 = LinearLayoutManager(context)
         return binding.root
@@ -62,7 +64,7 @@ class Home : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        FacilitateWork.locale(lang, resources)
+        FacilitateWork.locale(lang,resources)
         progressDialog.setMessage("Loading...")
         progressDialog.show()
         var weatherFactory = HomeViewModelFactory(
@@ -78,25 +80,26 @@ class Home : Fragment() {
                 val lat = sp.getString("lat","${0.0}")?.toDouble() as Double
                 val lon = sp.getString("lon","${0.0}")?.toDouble() as Double
                 viewModel.getWeatherData(lat ,lon ,lang ,units)
-            }else {
-
-                viewModel.getLatitude_Longitude(lang, units)
+            }else if(location=="gps"){
+                var getMyLocation= GetMyLocation(requireContext())
+                getMyLocation.getLastLocation()
+                getMyLocation.location.observe(context as LifecycleOwner){
+                    viewModel.getWeatherData(it.get(0),it.get(1),lang,units)
+              }
             }
             viewModel.homeData.observe(viewLifecycleOwner) {
-
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
                 progressDialog.dismiss()
                 viewModel.insertHomeDataIntoDataBase(it)
             }
         } else {
-
+            progressDialog.dismiss()
             viewModel.getHomeDataFromDataBase()
             viewModel.homeData.observe(viewLifecycleOwner) {
                 setHomeScreenData(it)
                 setHomeScreenAdapter(it)
             }
-            progressDialog.dismiss()
             Snackbar.make(
                 binding.imageView3,
                 "There is no internet connection",
@@ -132,5 +135,16 @@ class Home : Fragment() {
         binding.daysRV.layoutManager = manger2
     }
 
+    private fun openAndGetDataFromSharedPrefrence(){
+        sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
+        lang = sharedPref.getString("language", "en").toString()
+        location = sharedPref.getString("location", "gps").toString()
+        Log.i("essamsp", location)
+        speed = sharedPref.getString("speed", "meter").toString()
+        temp = sharedPref.getString("temp", "kel").toString()
+        mapDialog = sharedPref.getBoolean("mapFromDialog",false)
+        units = FacilitateWork.getTempUnitAndSign(temp, requireActivity()).first
+        degreeType = FacilitateWork.getTempUnitAndSign(temp, requireActivity()).second
+    }
 
 }

@@ -38,6 +38,7 @@ class Favorite : Fragment(),ListnerInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        activity?.actionBar?.hide()
         activity?.setTitle(R.string.menu_favorites)
         binding=FragmentFavoriteBinding.inflate(inflater, container, false)
         manager = LinearLayoutManager(context)
@@ -57,7 +58,7 @@ class Favorite : Fragment(),ListnerInterface {
             if(NetworkListener.getConnectivity(requireContext())) {
                 var sharedPref = context?.getSharedPreferences("settings", Context.MODE_PRIVATE)
                 var edit = sharedPref?.edit()
-                edit?.putString("location","favmap")
+                edit?.putString("fav","fromFav")
                 edit?.commit()
 
                 Navigation.findNavController(it).navigate(R.id.fromFavToMap)

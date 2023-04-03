@@ -33,12 +33,13 @@ class Settings : Fragment() {
                 edit.putString("language","ar")
                 edit.commit()
                 FacilitateWork.locale("ar",resources)
+                activity?.recreate()
             }
             else {
                 edit.putString("language","en")
                 edit.commit()
                 FacilitateWork.locale("en",resources)
-
+                activity?.recreate()
             }
         }
         settingsBinding.LocationGroup.setOnCheckedChangeListener { group, checkedId ->

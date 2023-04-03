@@ -8,14 +8,18 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.net.Proxy.getHost
+import android.net.Uri
 import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.*
+
 
 private const val My_LOCATION_PERMISSION_ID = 5005
 
@@ -31,7 +35,7 @@ class GetMyLocation(private val context: Context) {
             if (isEnabled()) {
                 requestNewLocationData()
             } else {
-                Toast.makeText(context, "Turn on location", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Turn on location", Toast.LENGTH_LONG)
                 val setting: Intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 context.startActivity(setting)
             }
@@ -39,17 +43,15 @@ class GetMyLocation(private val context: Context) {
             requestPersmission()
     }
 
-    fun checkPermissions(): Boolean {
 
+    fun checkPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 ||
                 ContextCompat.checkSelfPermission(
                     context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
     fun isEnabled(): Boolean {

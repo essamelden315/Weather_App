@@ -9,7 +9,11 @@
         android:id="@+id/home2"
         android:name="com.example.weather.home.view.Home"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/fromHomeToMap"
+            app:destination="@id/mapsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/alert"

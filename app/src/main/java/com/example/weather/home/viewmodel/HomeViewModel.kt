@@ -24,6 +24,7 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
         getMyLocation.location.observe(context as LifecycleOwner){
             getWeatherData(it.get(0),it.get(1),language,unit)
         }
+
     }
      fun getWeatherData(lati:Double, longi:Double,language:String,unit:String) {
         viewModelScope.launch(Dispatchers.IO) {
