@@ -69,7 +69,7 @@ class MapsFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        binding = FragmentMapsBinding.inflate(inflater, container, false)
         sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
         location = sharedPref.getString("location", "gps").toString()
         fromFav = sharedPref.getString("fav","not").toString()
@@ -77,9 +77,9 @@ class MapsFragment() : Fragment() {
         edit.putBoolean("mapFromDialog",false)
         edit.commit()
         if(fromFav == "not") flag =true
-        binding = FragmentMapsBinding.inflate(inflater, container, false)
+
         if (location == "map" && flag) {
-            binding.mapAddToFav.text = "Set Location"
+            binding.mapAddToFav.text = "Set Location" //create a text in string res
         }else
         { edit.putString("fav","not")
             edit.commit()}
