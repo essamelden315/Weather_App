@@ -60,7 +60,7 @@ class Favorite : Fragment(),ListnerInterface {
                 var edit = sharedPref?.edit()
                 edit?.putString("fav","fromFav")
                 edit?.commit()
-
+                requireActivity().actionBar?.setDisplayHomeAsUpEnabled(false)
                 Navigation.findNavController(it).navigate(R.id.fromFavToMap)
             }
             else

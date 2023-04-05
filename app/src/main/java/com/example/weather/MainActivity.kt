@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity() {
         actionBar?.setHomeAsUpIndicator(R.drawable.baseline_menu_24)
         actionBar?.setDisplayShowHomeEnabled(true)
         actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.show()
+
+
 
     }
 }

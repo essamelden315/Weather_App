@@ -76,13 +76,10 @@ class MapsFragment() : Fragment() {
         edit = sharedPref.edit()
         edit.putBoolean("mapFromDialog",false)
         edit.commit()
-        if(fromFav == "not") flag =true
-
-        if (location == "map" && flag) {
+        if (location == "map" && fromFav == "not") {
             binding.mapAddToFav.text = "Set Location" //create a text in string res
-        }else
-        { edit.putString("fav","not")
-            edit.commit()}
+        }
+
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(callback)
         mapInitialize()
@@ -139,10 +136,11 @@ class MapsFragment() : Fragment() {
 
         binding.mapAddToFav.setOnClickListener {
             if(NetworkListener.getConnectivity(requireContext())){
+
                 if (location == "map" && fromFav == "not") {
                     saveMapLatLon(latitude, longitude)
                     Navigation.findNavController(it).navigate(R.id.fromMapToHome)
-                } else {
+                } else if(fromFav == "fromFav"){
                     edit.putString("fav", "not")
                     edit.commit()
                     val favFactory = FavoriteViewModelFactory(
