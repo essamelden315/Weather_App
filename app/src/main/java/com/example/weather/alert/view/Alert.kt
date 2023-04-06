@@ -24,9 +24,13 @@ class Alert : Fragment() {
     lateinit var binding: FragmentAlertBinding
     lateinit var alarmManager: AlarmManager
     lateinit var pendingIntent: PendingIntent
-    lateinit var calendarTimeFrom: Calendar
-    var showDate: String? = null
-    var showTime: String? = null
+    lateinit var calendarTime: Calendar
+    lateinit var calenderDate: Calendar
+    lateinit var cashCalenderTime: Calendar
+    var cashDate1: String? = null
+    var cashDate2: String? = null
+    var cashTime1: String? = null
+    var cashTime2: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,13 +40,14 @@ class Alert : Fragment() {
         binding.alertFAB.setOnClickListener {
             if (NetworkListener.getConnectivity(requireContext())) {
                 showDialog()
+                binding.lottieLayerName.visibility = View.GONE
             } else
                 Snackbar.make(
                     binding.alertFAB,
                     "There is no internet connection",
                     Snackbar.LENGTH_LONG
                 ).show()
-            //binding.lottieLayerName.visibility = View.GONE
+
         }
 
         return binding.root
@@ -53,50 +58,30 @@ class Alert : Fragment() {
         val dialog = Dialog(requireContext())
         dialog.setContentView(dialogBinding.root)
 
-        dialogBinding.calenderBtn.setOnClickListener {
-            val calenderDate = Calendar.getInstance()
-            val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                calenderDate.set(Calendar.YEAR, year)
-                calenderDate.set(Calendar.MONTH, month)
-                calenderDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateDateLabel(calenderDate, dialogBinding)
-            }
-            DatePickerDialog(
-                requireContext(),
-                datePicker,
-                calenderDate.get(Calendar.YEAR),
-                calenderDate.get(Calendar.MONTH),
-                calenderDate.get(Calendar.DAY_OF_MONTH)
-            ).show()
+        dialogBinding.fromBtn.setOnClickListener {
+            pick(dialogBinding, 1)
         }
 
-        dialogBinding.timeBtn.setOnClickListener {
-            calendarTimeFrom = Calendar.getInstance()
-            val timePicker = TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
-                calendarTimeFrom.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendarTimeFrom.set(Calendar.MINUTE, minute)
-                calendarTimeFrom.timeZone = TimeZone.getDefault()
-                updateTimeLabel(calendarTimeFrom, dialogBinding)
-            }
-            TimePickerDialog(
-                requireContext(),
-                timePicker,
-                calendarTimeFrom.get(Calendar.HOUR_OF_DAY),
-                calendarTimeFrom.get(Calendar.MINUTE),
-                false
-            ).show()
+
+        dialogBinding.toBtn.setOnClickListener {
+            pick(dialogBinding, 2)
         }
-        dialogBinding.OKBtn.setOnClickListener {
-            if (showDate != null && showTime != null) {
+        dialogBinding.OkBtn.setOnClickListener {
+            if (cashTime1 != null && cashDate1 != null &&
+                cashTime2 != null && cashDate2 != null
+            ) {
                 dialog.dismiss()
                 Toast.makeText(
                     requireContext(),
-                    "the date is $showDate \n the time is $showTime",
+                    "time from $cashTime1 to $cashDate1 \n " +
+                            "date from $cashTime2 to $cashDate2",
                     Toast.LENGTH_LONG
                 ).show()
                 setAlarm()
-                showTime = null
-                showDate = null
+                cashDate1 = null
+                cashDate2 = null
+                cashTime1 = null
+                cashTime2 = null
             } else
                 Toast.makeText(
                     requireContext(),
@@ -105,6 +90,37 @@ class Alert : Fragment() {
                 ).show()
         }
         dialog.show()
+    }
+
+    private fun pick(dialogBinding: TimeCalenderDialogBinding, choose: Int) {
+        calendarTime = Calendar.getInstance()
+        val timePicker = TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
+            calendarTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calendarTime.set(Calendar.MINUTE, minute)
+            calendarTime.timeZone = TimeZone.getDefault()
+            updateTimeLabel(calendarTime, dialogBinding, choose)
+        }
+        TimePickerDialog(
+            requireContext(),
+            timePicker,
+            calendarTime.get(Calendar.HOUR_OF_DAY),
+            calendarTime.get(Calendar.MINUTE),
+            false
+        ).show()
+        calenderDate = Calendar.getInstance()
+        val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            calenderDate.set(Calendar.YEAR, year)
+            calenderDate.set(Calendar.MONTH, month)
+            calenderDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            updateDateLabel(calenderDate, dialogBinding, choose)
+        }
+        DatePickerDialog(
+            requireContext(),
+            datePicker,
+            calenderDate.get(Calendar.YEAR),
+            calenderDate.get(Calendar.MONTH),
+            calenderDate.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     fun createNotificationChannel() {
@@ -120,29 +136,55 @@ class Alert : Fragment() {
     }
 
     private fun setAlarm() {
-
         createNotificationChannel()
         alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
         alarmManager.setExact(
-            AlarmManager.RTC_WAKEUP, calendarTimeFrom.timeInMillis, pendingIntent
+            AlarmManager.RTC_WAKEUP, cashCalenderTime.timeInMillis, pendingIntent
         )
 
     }
-    private fun updateTimeLabel(calendarTime: Calendar, dialogBinding: TimeCalenderDialogBinding) {
+
+    private fun updateTimeLabel(
+        calendarTime: Calendar,
+        dialogBinding: TimeCalenderDialogBinding,
+        choose: Int
+    ) {
         val format = SimpleDateFormat("hh:mm:aa")
         val time = format.format(calendarTime.time)
-        showTime = time
-        dialogBinding.timeText.text = time
+        when (choose) {
+            1 -> {
+                dialogBinding.fromTime.text = time
+                cashTime1 = time
+                cashCalenderTime = calendarTime
+            }
+            2 -> {
+                dialogBinding.toTime.text = time
+                cashTime2 = time
+            }
+
+        }
     }
 
-    private fun updateDateLabel(calenderDate: Calendar, dialogBinding: TimeCalenderDialogBinding) {
+    private fun updateDateLabel(
+        calenderDate: Calendar,
+        dialogBinding: TimeCalenderDialogBinding,
+        choose: Int
+    ) {
         val day = SimpleDateFormat("dd").format(calenderDate.time)
         val month = SimpleDateFormat("MM").format(calenderDate.time)
         val year = SimpleDateFormat("yyyy").format(calenderDate.time)
-        dialogBinding.calenderTxt.text = "${day}/${month}/${year}"
-        showDate = "${day}/${month}/${year}"
+        when (choose) {
+            1 -> {
+                dialogBinding.fromCalender.text = "${day}/${month}/${year}"
+                cashDate1 = "${day}/${month}/${year}"
+            }
+            2 -> {
+                dialogBinding.toCalender.text = "${day}/${month}/${year}"
+                cashDate2 = "${day}/${month}/${year}"
+            }
+        }
     }
 
 

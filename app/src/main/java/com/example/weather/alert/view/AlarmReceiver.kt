@@ -34,6 +34,7 @@ class AlarmReceiver:BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context?, intent: Intent?) {
+        var msg="Every thing is okay"
         repo =  Repository.getInstance(
             WeatherClient.getInstance() as RemoteSource,
             ConcreteLocalSource.getInstance(context!!) as LocalDataSource
@@ -41,14 +42,15 @@ class AlarmReceiver:BroadcastReceiver() {
 
         CoroutineScope(Dispatchers.IO).launch {
            result= repo.getRetrofitWeatherData(31.0,31.0,"minutely","en","metric") as MyResponse
-
+            if(!result.alerts.isNullOrEmpty())
+                msg = (result.alerts.get(0).description).toString()
             val intent2 = Intent(context, MainActivity::class.java)
             intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             val pendingIntent = PendingIntent.getActivity(context, 0,intent2,0)
             val builder = NotificationCompat.Builder(context!!, CHANEL)
                 .setSmallIcon(R.drawable.alert_011)
                 .setContentTitle(result.timezone)
-                .setContentText("${result.current?.temp?.toInt()}°C")
+                .setContentText(msg)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setAutoCancel(true)

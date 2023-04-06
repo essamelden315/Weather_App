@@ -1,6 +1,7 @@
 package com.example.weather.database
 
 import androidx.room.TypeConverter
+import com.example.weather.model.Alerts
 import com.example.weather.model.Current
 import com.example.weather.model.Daily
 import com.example.weather.model.Weather
@@ -19,4 +20,9 @@ class Converter {
     fun listOfWeatherToJson(value: List<Weather> ) =Gson().toJson(value)
     @TypeConverter
     fun JsonToListOfWeather(value: String ) =Gson().fromJson(value,Array<Weather>::class.java).toList()
+    @TypeConverter
+    fun listOfAlertsToJson(value: List<Alerts> ) =Gson().toJson(value)
+    @TypeConverter
+    fun JsonToListOfAlerts(value: String ) =Gson().fromJson(value,Array<Alerts>::class.java).toList()
+
 }

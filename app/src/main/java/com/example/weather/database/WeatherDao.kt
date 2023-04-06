@@ -13,10 +13,10 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHomeData(myResponse: MyResponse)
 
-
+    //  @TypeConverters(Converter::class)
     @Delete
     suspend fun deleteHomeData(myResponse: MyResponse)
-  //  @TypeConverters(Converter::class)
+
     @Query("select * from dataFormula")
     fun getAllDataFromFavTable():Flow<List<SavedDataFormula>>
 

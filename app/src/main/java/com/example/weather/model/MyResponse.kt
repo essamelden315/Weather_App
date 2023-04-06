@@ -13,9 +13,10 @@ data class MyResponse (
     @Embedded
     val current: Current? = null,
     val hourly: List<Current>,
-    val daily: List<Daily>
+    val daily: List<Daily>,
+    var alerts: List<Alerts> = arrayListOf()
 ){
-    constructor():this(0.0 , 0.0 , "" ,0L ,null, listOf() , listOf() )
+    constructor():this(0.0 , 0.0 , "" ,0L ,null, listOf() , listOf())
 }
 
 

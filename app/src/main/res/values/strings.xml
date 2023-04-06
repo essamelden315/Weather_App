@@ -34,4 +34,8 @@
     <string name="visionM">m</string>
     <string name="dialogBtn">Ok</string>
     <string name="dialogProgress">Loading...</string>
+    <string name="AlertFromBtn">From</string>
+    <string name="AlertToBtn">To</string>
+    <string name="AlertNotification">Notification</string>
+    <string name="AlertAlarm">Alarm</string>
 </resources>
