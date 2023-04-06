@@ -35,4 +35,8 @@
     <string name="visionM">متر</string>
     <string name="dialogBtn">موافق</string>
     <string name="dialogProgress">تحميل...</string>
+    <string name="AlertFromBtn">من</string>
+    <string name="AlertToBtn">الي</string>
+    <string name="AlertNotification">اشعارات</string>
+    <string name="AlertAlarm">منبه</string>
 </resources>
