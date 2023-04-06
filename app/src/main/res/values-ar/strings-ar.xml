@@ -32,6 +32,7 @@
     <string name="menu_favorites">المفضلة</string>
     <string name="menu_alerts">التنبيهات</string>
     <string name="menu_settings">الأعدادات</string>
-    <string name="HectroPascal">هيكتوباسكال</string>
     <string name="visionM">متر</string>
+    <string name="dialogBtn">موافق</string>
+    <string name="dialogProgress">تحميل...</string>
 </resources>

@@ -31,7 +31,7 @@
     <string name="menu_favorites">Favorites</string>
     <string name="menu_alerts">Alerts</string>
     <string name="menu_settings">Settings</string>
-    <string name="HectroPascal">hpa</string>
     <string name="visionM">m</string>
     <string name="dialogBtn">Ok</string>
+    <string name="dialogProgress">Loading...</string>
 </resources>

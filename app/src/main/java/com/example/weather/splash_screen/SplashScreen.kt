@@ -40,6 +40,7 @@ class SplashScreen : AppCompatActivity() {
                 else -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
             }
         }, 5000)
@@ -70,8 +71,9 @@ class SplashScreen : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
         dialog.show()
 
+
     }
+
 }

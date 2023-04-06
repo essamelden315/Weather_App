@@ -54,7 +54,7 @@ class Favorite : Fragment(),ListnerInterface {
         }
         binding.FavRV.adapter = favAdapter
         binding.FavRV.layoutManager = manager
-        binding.favFAB.setOnClickListener() {
+        binding.favFAB.setOnClickListener {
             if(NetworkListener.getConnectivity(requireContext())) {
                 var sharedPref = context?.getSharedPreferences("settings", Context.MODE_PRIVATE)
                 var edit = sharedPref?.edit()

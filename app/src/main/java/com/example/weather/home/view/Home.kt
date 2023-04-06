@@ -65,7 +65,7 @@ class Home : Fragment() {
     override fun onResume() {
         super.onResume()
         FacilitateWork.locale(lang,resources)
-        progressDialog.setMessage("Loading...")
+        progressDialog.setMessage(activity?.getString(R.string.dialogProgress))
         progressDialog.show()
         var weatherFactory = HomeViewModelFactory(
             Repository.getInstance(
@@ -97,8 +97,10 @@ class Home : Fragment() {
             progressDialog.dismiss()
             viewModel.getHomeDataFromDataBase()
             viewModel.homeData.observe(viewLifecycleOwner) {
-                setHomeScreenData(it)
-                setHomeScreenAdapter(it)
+                if(it!=null){
+                    setHomeScreenData(it)
+                    setHomeScreenAdapter(it)
+                }
             }
             Snackbar.make(
                 binding.imageView3,
