@@ -11,7 +11,7 @@ interface WeatherDao {
     @Query("select * from HomeData")
     fun getHomeData():Flow<MyResponse>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHomeData(myResponse: MyResponse)
 
     @Query("DELETE from HomeData")
@@ -29,7 +29,7 @@ interface WeatherDao {
     @Query("select * from AlertData")
     fun getAllDataFromAlert():Flow<List<AlertData>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDataIntoAlertTable(alertData: AlertData)
 
     @Delete
