@@ -47,9 +47,9 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
         }
 
     }
-     fun deleteHomeDaraFromDataBase(myResponse: MyResponse){
+     fun deleteHomeDaraFromDataBase(){
         viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteHomeData(myResponse)
+            repo.deleteHomeData()
         }
     }
 }

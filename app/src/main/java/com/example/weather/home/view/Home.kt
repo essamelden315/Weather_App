@@ -75,8 +75,9 @@ class Home : Fragment() {
         )
         viewModel = ViewModelProvider(this, weatherFactory).get(HomeViewModel::class.java)
         if (NetworkListener.getConnectivity(requireContext())) {
+            viewModel.deleteHomeDaraFromDataBase()
+            val sp = requireActivity().getSharedPreferences("mapData", Context.MODE_PRIVATE)
             if(location =="map"){
-                val sp = requireActivity().getSharedPreferences("mapData", Context.MODE_PRIVATE)
                 val lat = sp.getString("lat","${0.0}")?.toDouble() as Double
                 val lon = sp.getString("lon","${0.0}")?.toDouble() as Double
                 viewModel.getWeatherData(lat ,lon ,lang ,units)
@@ -84,6 +85,10 @@ class Home : Fragment() {
                 var getMyLocation= GetMyLocation(requireContext())
                 getMyLocation.getLastLocation()
                 getMyLocation.location.observe(context as LifecycleOwner){
+                    val insideEdit = sp.edit()
+                    insideEdit.putString("lat","${it.get(0)}")
+                    insideEdit.putString("lon","${it.get(1)}")
+                    insideEdit.commit()
                     viewModel.getWeatherData(it.get(0),it.get(1),lang,units)
               }
             }

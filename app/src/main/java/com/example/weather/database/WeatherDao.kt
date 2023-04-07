@@ -1,6 +1,7 @@
 package com.example.weather.database
 
 import androidx.room.*
+import com.example.weather.model.AlertData
 import com.example.weather.model.MyResponse
 import com.example.weather.model.SavedDataFormula
 import kotlinx.coroutines.flow.Flow
@@ -10,12 +11,11 @@ interface WeatherDao {
     @Query("select * from HomeData")
     fun getHomeData():Flow<MyResponse>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertHomeData(myResponse: MyResponse)
 
-    //  @TypeConverters(Converter::class)
-    @Delete
-    suspend fun deleteHomeData(myResponse: MyResponse)
+    @Query("DELETE from HomeData")
+    suspend fun deleteHomeData()
 
     @Query("select * from dataFormula")
     fun getAllDataFromFavTable():Flow<List<SavedDataFormula>>
@@ -25,4 +25,13 @@ interface WeatherDao {
 
     @Delete
     suspend fun deleteDataFromFavTable(savedDataFormula: SavedDataFormula)
+
+    @Query("select * from AlertData")
+    fun getAllDataFromAlert():Flow<List<AlertData>>
+
+    @Insert
+    fun insertDataIntoAlertTable(alertData: AlertData)
+
+    @Delete
+    fun deleteDataFromAlertTable(alertData: AlertData)
 }

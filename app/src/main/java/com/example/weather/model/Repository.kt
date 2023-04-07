@@ -28,8 +28,8 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
         localSource.insertHomeData(myResponse)
     }
 
-    override suspend fun deleteHomeData(myResponse: MyResponse) {
-        localSource.deleteHomeData(myResponse)
+    override suspend fun deleteHomeData() {
+        localSource.deleteHomeData()
     }
 
     override fun showFavData(): Flow<List<SavedDataFormula>>? {
@@ -43,5 +43,17 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
 
     override suspend fun deleteFromFav(savedDataFormula: SavedDataFormula) {
         localSource.deleteFromFav(savedDataFormula)
+    }
+
+    override fun getAlertData(): Flow<List<AlertData>>? {
+        return localSource.getAlertData()
+    }
+
+    override suspend fun insertIntoAlertTable(alertData: AlertData) {
+        localSource.insertIntoAlertTable(alertData)
+    }
+
+    override suspend fun deletefromAlertTable(alertData: AlertData) {
+        localSource.deletefromAlertTable(alertData)
     }
 }

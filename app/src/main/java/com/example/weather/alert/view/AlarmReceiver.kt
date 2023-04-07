@@ -7,6 +7,7 @@ import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.window.SplashScreen
@@ -31,9 +32,12 @@ class AlarmReceiver:BroadcastReceiver() {
     private val CHANEL = "CHANNEL_ID"
     private lateinit var  repo:Repository
     private lateinit var result:MyResponse
-
+    private lateinit var sharedPreferences: SharedPreferences
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context?, intent: Intent?) {
+        sharedPreferences = context?.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
+        val lat = sharedPreferences.getString("lat","${0.0}")?.toDouble() as Double
+        val lon = sharedPreferences.getString("lon","${0.0}")?.toDouble() as Double
         var msg="Every thing is okay"
         repo =  Repository.getInstance(
             WeatherClient.getInstance() as RemoteSource,
@@ -41,7 +45,7 @@ class AlarmReceiver:BroadcastReceiver() {
         ) as Repository
 
         CoroutineScope(Dispatchers.IO).launch {
-           result= repo.getRetrofitWeatherData(31.0,31.0,"minutely","en","metric") as MyResponse
+           result= repo.getRetrofitWeatherData(lat,lon,"minutely","en","metric") as MyResponse
             if(!result.alerts.isNullOrEmpty())
                 msg = (result.alerts.get(0).description).toString()
             val intent2 = Intent(context, MainActivity::class.java)
