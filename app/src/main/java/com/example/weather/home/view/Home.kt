@@ -9,9 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,12 +26,16 @@ import com.example.weather.home.viewmodel.HomeViewModel
 import com.example.weather.home.viewmodel.HomeViewModelFactory
 import com.example.weather.model.MyResponse
 import com.example.weather.model.Repository
+import com.example.weather.network.ApiState
 import com.example.weather.network.NetworkListener
 import com.example.weather.network.RemoteSource
 import com.example.weather.network.WeatherClient
 import com.example.weather.utilities.FacilitateWork
 import com.example.weather.utilities.TimeConverter
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Home : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -66,13 +72,20 @@ class Home : Fragment() {
         super.onResume()
         FacilitateWork.locale(lang,resources)
         progressDialog.setMessage(activity?.getString(R.string.dialogProgress))
-        progressDialog.show()
         var weatherFactory = HomeViewModelFactory(
             Repository.getInstance(
                 WeatherClient.getInstance() as RemoteSource,
                 ConcreteLocalSource.getInstance(requireContext()) as LocalDataSource
             ) as Repository, requireContext()
         )
+        binding.homeSwipeLayout.setOnRefreshListener {
+            myHomeData(weatherFactory)
+            binding.homeSwipeLayout.isRefreshing=false
+        }
+        myHomeData(weatherFactory)
+
+    }
+    fun myHomeData(weatherFactory: HomeViewModelFactory){
         viewModel = ViewModelProvider(this, weatherFactory).get(HomeViewModel::class.java)
         if (NetworkListener.getConnectivity(requireContext())) {
             viewModel.deleteHomeDaraFromDataBase()
@@ -90,34 +103,53 @@ class Home : Fragment() {
                     insideEdit.putString("lon","${it.get(1)}")
                     insideEdit.commit()
                     viewModel.getWeatherData(it.get(0),it.get(1),lang,units)
-              }
+                }
             }
-            viewModel.homeData.observe(viewLifecycleOwner) {
-                setHomeScreenData(it)
-                setHomeScreenAdapter(it)
-                progressDialog.dismiss()
-                viewModel.insertHomeDataIntoDataBase(it)
+            lifecycleScope.launch{
+                viewModel.homeData.collect{
+                    when (it){
+                        is ApiState.Loading ->{
+                            progressDialog.show()
+                        }
+                        is ApiState.Success ->{
+                            progressDialog.hide()
+                            setHomeScreenData(it.myResponse)
+                            setHomeScreenAdapter(it.myResponse )
+                            viewModel.insertHomeDataIntoDataBase(it.myResponse)
+                        }
+                        else ->  Snackbar.make(
+                            binding.imageView5,
+                            "Faild to obtain data from api",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
         } else {
             progressDialog.dismiss()
             viewModel.getHomeDataFromDataBase()
-            viewModel.homeData.observe(viewLifecycleOwner) {
-                if(it!=null){
-                    setHomeScreenData(it)
-                    setHomeScreenAdapter(it)
+            lifecycleScope.launch (Dispatchers.IO){
+                viewModel.homeData.collect {
+                    when (it) {
+                        is ApiState.Success -> {
+                            withContext(Dispatchers.Main){
+                                progressDialog.hide()
+                                setHomeScreenData(it.myResponse)
+                                setHomeScreenAdapter(it.myResponse)
+                            }
+                        }
+                        else -> Snackbar.make(
+                            binding.imageView3,
+                            "There is no internet connection",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
                 }
+
             }
-            Snackbar.make(
-                binding.imageView3,
-                "There is no internet connection",
-                Snackbar.LENGTH_LONG
-            ).show()
         }
-
     }
-
     private fun setHomeScreenData(it: MyResponse) {
-        progressDialog.show()
         binding.dateTxt.text = TimeConverter.convertHomeDate(it.current?.dt)
         binding.countryTxt.text = it.timezone
         binding.degeeTxt.text = it.current?.temp?.toInt().toString()

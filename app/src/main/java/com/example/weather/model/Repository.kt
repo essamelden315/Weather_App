@@ -16,10 +16,10 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
             return myInstance
         }
     }
-   override suspend fun getRetrofitList(lat:Double, lon:Double, exclude:String, lang:String, units:String): MyResponse? {
+   override suspend fun getRetrofitList(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<MyResponse>{
       return remoteSource.getRetrofitList(lat,lon,exclude,lang,units)
    }
-    override fun getHomeData(): Flow<MyResponse>? {
+    override fun getHomeData(): Flow<MyResponse> {
         return localSource.getHomeData()
     }
 
@@ -31,7 +31,7 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
         localSource.deleteHomeData()
     }
 
-    override fun showFavData(): Flow<List<SavedDataFormula>>? {
+    override fun showFavData(): Flow<List<SavedDataFormula>> {
         return localSource.showFavData()
     }
 
@@ -44,7 +44,7 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
         localSource.deleteFromFav(savedDataFormula)
     }
 
-    override fun getAlertData(): Flow<List<AlertData>>? {
+    override fun getAlertData(): Flow<List<AlertData>> {
         return localSource.getAlertData()
     }
 

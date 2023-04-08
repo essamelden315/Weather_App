@@ -2,6 +2,8 @@ package com.example.weather.network
 
 
 import com.example.weather.model.MyResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -30,11 +32,11 @@ lateinit var result:MyResponse
         }
     }
 
-    override suspend fun getRetrofitList(lat:Double,lon:Double,exclude:String,lang:String,units:String):MyResponse? {
+    override suspend fun getRetrofitList(lat:Double,lon:Double,exclude:String,lang:String,units:String): Flow<MyResponse> {
 
         var response = myApiService.api_service.getWeatherDetails(lat,lon,exclude,lang,units)
         if (response.isSuccessful)
            result = response.body()!!
-        return result
+        return flowOf(result)
     }
 }
