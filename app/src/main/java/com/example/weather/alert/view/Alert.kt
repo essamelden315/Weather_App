@@ -6,6 +6,7 @@ import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -50,12 +51,12 @@ class Alert : Fragment(),onClickLinsterInterface {
     var cashCalenderFromDate: Long = 0
     var cashCalenderToTime: Long = 0
     var cashCalenderToDate: Long = 0
+    var c:Int =0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         activity?.setTitle(R.string.menu_alerts)
-        Log.i("aaaaaa", "onCreateView: ${Calendar.getInstance().timeInMillis}")
         binding = FragmentAlertBinding.inflate(inflater, container, false)
         alertFactory = AlertViewModelFactory(
             Repository.getInstance(
@@ -66,17 +67,18 @@ class Alert : Fragment(),onClickLinsterInterface {
         viewModel = ViewModelProvider(requireActivity(), alertFactory).get(AlertViewModel::class.java)
         myAdapter= AlertAdapter(listOf(),this)
         manager = LinearLayoutManager(context)
-        viewModel.alertData.observe(viewLifecycleOwner) { data ->
-                if (data.isNotEmpty()) {
-                    binding.lottieLayerName.visibility = View.GONE
-                }else
-                binding.lottieLayerName.visibility = View.VISIBLE
-            myAdapter.setList(data)
+        binding.swipeRefresh.setOnRefreshListener {
+            observeAtData()
+            binding.swipeRefresh.isRefreshing =false
         }
+        observeAtData()
         binding.alertRV.adapter = myAdapter
         binding.alertRV.layoutManager = manager
         binding.alertFAB.setOnClickListener {
             if (NetworkListener.getConnectivity(requireContext())) {
+                if (!Settings.canDrawOverlays(requireContext())){
+                    requestOverAppPermission()
+                }
                 showDialog()
             } else
                 Snackbar.make(
@@ -87,7 +89,17 @@ class Alert : Fragment(),onClickLinsterInterface {
         }
         return binding.root
     }
+    fun observeAtData(){
+        viewModel.alertData.observe(viewLifecycleOwner) { data ->
+            if (data.isNotEmpty()) {
+                binding.lottieLayerName.visibility = View.GONE
+            }else
+                binding.lottieLayerName.visibility = View.VISIBLE
+            myAdapter.setList(data)
+        }
 
+    }
+    //show dialog
     fun showDialog() {
         val dialogBinding = TimeCalenderDialogBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
@@ -102,6 +114,16 @@ class Alert : Fragment(),onClickLinsterInterface {
         dialogBinding.toBtn.setOnClickListener {
             pickTime(dialogBinding, 2)
             pickDate(dialogBinding, 2)
+        }
+        dialogBinding.timeCalenderRadioGroup.setOnCheckedChangeListener{group , checkedId ->
+            if(group.checkedRadioButtonId == R.id.notificationRBtn) {
+                c = 1
+                Toast.makeText(requireContext(),"notification",Toast.LENGTH_SHORT).show()
+            }
+            else if(group.checkedRadioButtonId==R.id.alarmRBtn) {
+                c = 2
+                Toast.makeText(requireContext(),"alarm",Toast.LENGTH_SHORT).show()
+            }
         }
         dialogBinding.OkBtn.setOnClickListener {
             if (cashTime1 != null && cashDate1 != null &&
@@ -122,6 +144,7 @@ class Alert : Fragment(),onClickLinsterInterface {
                         requestCode
                     )
                 )
+
                 setAlarm()
                 cashDate1 = null
                 cashDate2 = null
@@ -219,19 +242,29 @@ class Alert : Fragment(),onClickLinsterInterface {
     // set Alarm
     private fun setAlarm() {
         var noOfDays = cashCalenderToDate - cashCalenderFromDate
+        var testCanlender = Calendar.getInstance()
+        testCanlender.timeInMillis = cashCalenderFromDate
+        val trigerCalender = Calendar.getInstance()
+        trigerCalender.set(Calendar.DAY_OF_MONTH,testCanlender.get(Calendar.DAY_OF_MONTH))
+        trigerCalender.set(Calendar.MONTH,testCanlender.get(Calendar.MONTH))
+        trigerCalender.set(Calendar.YEAR,testCanlender.get(Calendar.YEAR))
+        testCanlender.timeInMillis = cashCalenderFromTime
+        trigerCalender.set(Calendar.HOUR_OF_DAY,testCanlender.get(Calendar.HOUR_OF_DAY))
+        trigerCalender.set(Calendar.MINUTE,testCanlender.get(Calendar.MINUTE))
+        Log.i("aaaaaa", "setAlarm: ${trigerCalender.timeInMillis}")
         val days = TimeUnit.MILLISECONDS.toDays(noOfDays)
-        Log.i("aaaaaa", "setAlarm: $days ")
         val dayInMilliSecond = 24 * 60 * 60 * 1000
-        val intent = Intent(requireContext(), AlarmReceiver::class.java)
-        alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
+
+        Log.i("aaaaaa", "choose: $c")
+
         for (i in 0..days) {
+            alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
+            val intent = Intent(requireContext(), AlarmReceiver::class.java)
+            intent.putExtra("d",c)
             createNotificationChannel()
-            //send lat lon via intent
             pendingIntent = getBroadcast(requireContext(), (requestCode*i).toInt(), intent, 0)
             alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                cashCalenderFromTime + (i * dayInMilliSecond),
-                pendingIntent
+                AlarmManager.RTC_WAKEUP, trigerCalender.timeInMillis + (i * dayInMilliSecond), pendingIntent
             )
         }
     }
@@ -248,22 +281,27 @@ class Alert : Fragment(),onClickLinsterInterface {
         }
     }
 
-   /* override fun cancleAlarm(alertData: AlertData) {
-       *//* var noOfDays = alertData.milleDateTo - alertData.milleDateFrom
+     override fun cancleAlarm(alertData: AlertData) {
+        var noOfDays = alertData.milleDateTo - alertData.milleDateFrom
         val days = TimeUnit.MILLISECONDS.toDays(noOfDays)
-        Log.i("cancel", "setAlarm: $days")
         alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(activity, AlarmReceiver::class.java)
         for (i in 0..days) {
             pendingIntent = getBroadcast(context, (alertData.requestCode*i).toInt(), intent, 0)
             alarmManager.cancel(pendingIntent)
-        }*//*
+        }
         delete(alertData)
-    }*/
+    }
 
-    override fun cancleAlarm(alertData: AlertData) {
+    override fun getChoose(): Int {
+        return c
+    }
+
+    fun delete(alertData: AlertData) {
         viewModel.deleteFromAlert(alertData)
 
     }
-
+    private fun requestOverAppPermission() {
+        startActivityForResult(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION),20)
+    }
 }

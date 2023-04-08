@@ -24,7 +24,8 @@ class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickL
     override fun onBindViewHolder(holder: myViewHolder, position: Int) {
         var alertItem = alertList[position]
         val endTime = alertItem.milleTimeTo + (alertItem.milleTimeTo - alertItem.milleTimeFrom)
-
+            if(Calendar.getInstance().timeInMillis > endTime)
+                onClick.cancleAlarm(alertItem)
             holder.viewBinding.fromTimeCard.text = alertItem.fromTime
             holder.viewBinding.fromDateCard.text = alertItem.fromDate
             holder.viewBinding.toTimeCard.text = alertItem.toTime
