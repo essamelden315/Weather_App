@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.weather.MainActivity
 import com.example.weather.R
 import com.example.weather.databinding.ActivitySplashScreenBinding
-import com.example.weather.databinding.DialogLayoutBinding
+import com.example.weather.databinding.HomeDialogLayoutBinding
 import com.example.weather.utilities.FacilitateWork
 import kotlinx.coroutines.delay
 
@@ -48,7 +48,7 @@ class SplashScreen : AppCompatActivity() {
     }
 
     private fun showSettingsDialog() {
-        val dialogBinding = DialogLayoutBinding.inflate(layoutInflater)
+        val dialogBinding = HomeDialogLayoutBinding.inflate(layoutInflater)
         val dialog= Dialog(this)
         dialog.setContentView(dialogBinding.root)
 

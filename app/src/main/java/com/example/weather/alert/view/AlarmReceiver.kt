@@ -46,12 +46,12 @@ class AlarmReceiver:BroadcastReceiver(){
     private lateinit var  repo:Repository
     private lateinit var result:MyResponse
     private lateinit var sharedPreferences: SharedPreferences
-    var c:Int?= 0
+    private lateinit var spChoise: SharedPreferences
+    private lateinit var choise:String
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context?, intent: Intent?) {
-
-        c=intent?.getIntExtra("d",-1)
-        Log.i("aaaaaa", "onReceive: $c")
+        spChoise = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
+        choise = spChoise.getString("what","notification") as String
         sharedPreferences = context?.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
         val lat = sharedPreferences.getString("lat","${0.0}")?.toDouble() as Double
         val lon = sharedPreferences.getString("lon","${0.0}")?.toDouble() as Double
@@ -68,7 +68,7 @@ class AlarmReceiver:BroadcastReceiver(){
             val intent2 = Intent(context, MainActivity::class.java)
             intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             val pendingIntent = PendingIntent.getActivity(context, 0,intent2,0)
-            if (c == 1){
+            if (choise.equals("notification")){
                 val builder = NotificationCompat.Builder(context!!, CHANEL)
                     .setSmallIcon(R.drawable.alert_011)
                     .setContentTitle(result.timezone)

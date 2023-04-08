@@ -5,18 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather.databinding.AlertLayoutBinding
+import com.example.weather.databinding.AlertRecycleviewLayoutBinding
 import com.example.weather.model.AlertData
 import java.util.*
 
 
 class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickLinsterInterface): RecyclerView.Adapter<AlertAdapter.myViewHolder>() {
     lateinit var context: Context
-    lateinit var alertBinding: AlertLayoutBinding
+    lateinit var alertBinding: AlertRecycleviewLayoutBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): myViewHolder {
         val inflater: LayoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        alertBinding = AlertLayoutBinding.inflate(inflater,parent,false)
+        alertBinding = AlertRecycleviewLayoutBinding.inflate(inflater,parent,false)
         context=parent.context
         return myViewHolder(alertBinding)
     }
@@ -24,16 +24,16 @@ class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickL
     override fun onBindViewHolder(holder: myViewHolder, position: Int) {
         var alertItem = alertList[position]
         val endTime = alertItem.milleTimeTo + (alertItem.milleTimeTo - alertItem.milleTimeFrom)
-            if(Calendar.getInstance().timeInMillis > endTime)
-                onClick.cancleAlarm(alertItem)
-            holder.viewBinding.fromTimeCard.text = alertItem.fromTime
-            holder.viewBinding.fromDateCard.text = alertItem.fromDate
-            holder.viewBinding.toTimeCard.text = alertItem.toTime
-            holder.viewBinding.toDateCard.text = alertItem.toDate
-            holder.viewBinding.alertCardDeleteBtn.setOnClickListener{
-                onClick.cancleAlarm(alertItem)
-                notifyDataSetChanged()
-            }
+        if(Calendar.getInstance().timeInMillis > endTime)
+            onClick.cancleAlarm(alertItem)
+        holder.viewBinding.fromTimeCard.text = alertItem.fromTime
+        holder.viewBinding.fromDateCard.text = alertItem.fromDate
+        holder.viewBinding.toTimeCard.text = alertItem.toTime
+        holder.viewBinding.toDateCard.text = alertItem.toDate
+        holder.viewBinding.alertCardDeleteBtn.setOnClickListener{
+            onClick.cancleAlarm(alertItem)
+            notifyDataSetChanged()
+        }
 
     }
 
@@ -45,5 +45,5 @@ class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickL
         notifyDataSetChanged()
     }
 
-    class myViewHolder(val viewBinding: AlertLayoutBinding): RecyclerView.ViewHolder(viewBinding.root)
+    class myViewHolder(val viewBinding: AlertRecycleviewLayoutBinding): RecyclerView.ViewHolder(viewBinding.root)
 }

@@ -2,8 +2,10 @@ package com.example.weather.alert.view
 
 import android.app.*
 import android.app.PendingIntent.getBroadcast
+import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -20,8 +22,8 @@ import com.example.weather.alert.viewmodel.AlertViewModel
 import com.example.weather.alert.viewmodel.AlertViewModelFactory
 import com.example.weather.database.ConcreteLocalSource
 import com.example.weather.database.LocalDataSource
+import com.example.weather.databinding.AlertDialogBinding
 import com.example.weather.databinding.FragmentAlertBinding
-import com.example.weather.databinding.TimeCalenderDialogBinding
 import com.example.weather.model.AlertData
 import com.example.weather.model.Repository
 import com.example.weather.network.NetworkListener
@@ -31,7 +33,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
+
 
 class Alert : Fragment(),onClickLinsterInterface {
     private val CHANEL = "CHANNEL_ID"
@@ -42,6 +44,8 @@ class Alert : Fragment(),onClickLinsterInterface {
     lateinit var viewModel: AlertViewModel
     lateinit var myAdapter: AlertAdapter
     lateinit var manager: LinearLayoutManager
+    lateinit var sharedPreferences:SharedPreferences
+    lateinit var choise:String
     var requestCode:Long =0
     var cashDate1: String? = null
     var cashDate2: String? = null
@@ -51,13 +55,15 @@ class Alert : Fragment(),onClickLinsterInterface {
     var cashCalenderFromDate: Long = 0
     var cashCalenderToTime: Long = 0
     var cashCalenderToDate: Long = 0
-    var c:Int =0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         activity?.setTitle(R.string.menu_alerts)
         binding = FragmentAlertBinding.inflate(inflater, container, false)
+        sharedPreferences = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
+        choise = sharedPreferences.getString("what","notification") as String
         alertFactory = AlertViewModelFactory(
             Repository.getInstance(
                 WeatherClient.getInstance() as RemoteSource,
@@ -101,10 +107,9 @@ class Alert : Fragment(),onClickLinsterInterface {
     }
     //show dialog
     fun showDialog() {
-        val dialogBinding = TimeCalenderDialogBinding.inflate(layoutInflater)
+        val dialogBinding = AlertDialogBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext())
         dialog.setContentView(dialogBinding.root)
-
         dialogBinding.fromBtn.setOnClickListener {
             pickTime(dialogBinding, 1)
             pickDate(dialogBinding, 1)
@@ -116,18 +121,22 @@ class Alert : Fragment(),onClickLinsterInterface {
             pickDate(dialogBinding, 2)
         }
         dialogBinding.timeCalenderRadioGroup.setOnCheckedChangeListener{group , checkedId ->
+            val edit = sharedPreferences.edit()
             if(group.checkedRadioButtonId == R.id.notificationRBtn) {
-                c = 1
-                Toast.makeText(requireContext(),"notification",Toast.LENGTH_SHORT).show()
+                edit.putString("what","notification")
+                edit.commit()
             }
             else if(group.checkedRadioButtonId==R.id.alarmRBtn) {
-                c = 2
-                Toast.makeText(requireContext(),"alarm",Toast.LENGTH_SHORT).show()
+                edit.putString("what","alarm")
+                edit.commit()
             }
         }
         dialogBinding.OkBtn.setOnClickListener {
             if (cashTime1 != null && cashDate1 != null &&
-                cashTime2 != null && cashDate2 != null
+                cashTime2 != null && cashDate2 != null &&
+                dialogBinding.notificationRBtn.isChecked ||
+                dialogBinding.alarmRBtn.isChecked
+
             ) {
                 dialog.dismiss()
                 requestCode= Calendar.getInstance().timeInMillis
@@ -161,7 +170,7 @@ class Alert : Fragment(),onClickLinsterInterface {
     }
 
     // picker time and picker date
-    private fun pickTime(dialogBinding: TimeCalenderDialogBinding, choose: Int) {
+    private fun pickTime(dialogBinding: AlertDialogBinding, choose: Int) {
         val calendarTime = Calendar.getInstance()
         val timePicker = TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
             calendarTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
@@ -177,7 +186,7 @@ class Alert : Fragment(),onClickLinsterInterface {
             false
         ).show()
     }
-    private fun pickDate(dialogBinding: TimeCalenderDialogBinding, choose: Int){
+    private fun pickDate(dialogBinding: AlertDialogBinding, choose: Int){
         val calenderDate = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             calenderDate.set(Calendar.YEAR, year)
@@ -196,7 +205,7 @@ class Alert : Fragment(),onClickLinsterInterface {
     //update ui
     private fun updateTimeLabel(
         calendarTime: Calendar,
-        dialogBinding: TimeCalenderDialogBinding,
+        dialogBinding: AlertDialogBinding,
         choose: Int
     ) {
         val format = SimpleDateFormat("hh:mm:aa")
@@ -218,7 +227,7 @@ class Alert : Fragment(),onClickLinsterInterface {
 
     private fun updateDateLabel(
         calenderDate: Calendar,
-        dialogBinding: TimeCalenderDialogBinding,
+        dialogBinding: AlertDialogBinding,
         choose: Int
     ) {
         val day = SimpleDateFormat("dd").format(calenderDate.time)
@@ -242,6 +251,19 @@ class Alert : Fragment(),onClickLinsterInterface {
     // set Alarm
     private fun setAlarm() {
         var noOfDays = cashCalenderToDate - cashCalenderFromDate
+        val days = TimeUnit.MILLISECONDS.toDays(noOfDays)
+        val dayInMilliSecond = 24 * 60 * 60 * 1000
+        alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        for (i in 0..days) {
+            createNotificationChannel()
+            pendingIntent = getBroadcast(requireContext(), (requestCode*i).toInt(), intent, 0)
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP, trigerTime().timeInMillis + (i * dayInMilliSecond), pendingIntent
+            )
+        }
+    }
+    fun trigerTime(): Calendar{
         var testCanlender = Calendar.getInstance()
         testCanlender.timeInMillis = cashCalenderFromDate
         val trigerCalender = Calendar.getInstance()
@@ -251,22 +273,7 @@ class Alert : Fragment(),onClickLinsterInterface {
         testCanlender.timeInMillis = cashCalenderFromTime
         trigerCalender.set(Calendar.HOUR_OF_DAY,testCanlender.get(Calendar.HOUR_OF_DAY))
         trigerCalender.set(Calendar.MINUTE,testCanlender.get(Calendar.MINUTE))
-        Log.i("aaaaaa", "setAlarm: ${trigerCalender.timeInMillis}")
-        val days = TimeUnit.MILLISECONDS.toDays(noOfDays)
-        val dayInMilliSecond = 24 * 60 * 60 * 1000
-
-        Log.i("aaaaaa", "choose: $c")
-
-        for (i in 0..days) {
-            alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
-            val intent = Intent(requireContext(), AlarmReceiver::class.java)
-            intent.putExtra("d",c)
-            createNotificationChannel()
-            pendingIntent = getBroadcast(requireContext(), (requestCode*i).toInt(), intent, 0)
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP, trigerCalender.timeInMillis + (i * dayInMilliSecond), pendingIntent
-            )
-        }
+        return trigerCalender
     }
     //create notification
     fun createNotificationChannel() {
@@ -291,10 +298,6 @@ class Alert : Fragment(),onClickLinsterInterface {
             alarmManager.cancel(pendingIntent)
         }
         delete(alertData)
-    }
-
-    override fun getChoose(): Int {
-        return c
     }
 
     fun delete(alertData: AlertData) {
