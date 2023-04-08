@@ -62,7 +62,7 @@ class AlarmReceiver:BroadcastReceiver(){
         ) as Repository
 
         CoroutineScope(Dispatchers.IO).launch {
-           result= repo.getRetrofitWeatherData(lat,lon,"minutely","en","metric") as MyResponse
+           result= repo.getRetrofitList(lat,lon,"minutely","en","metric") as MyResponse
             if(!result.alerts.isNullOrEmpty())
                 msg = (result.alerts.get(0).description).toString()
             val intent2 = Intent(context, MainActivity::class.java)

@@ -28,7 +28,7 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
     }
      fun getWeatherData(lati:Double, longi:Double,language:String,unit:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _homeData.postValue(repo.getRetrofitWeatherData(lati,longi,"minutely",language,unit))
+            _homeData.postValue(repo.getRetrofitList(lati,longi,"minutely",language,unit))
         }
 
     }

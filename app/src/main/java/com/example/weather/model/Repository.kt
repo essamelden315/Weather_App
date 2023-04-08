@@ -16,10 +16,9 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
             return myInstance
         }
     }
-    override suspend fun getRetrofitWeatherData(lat:Double,lon:Double,exclude:String,lang:String,units:String): MyResponse? {
-        return remoteSource.getRetrofitList(lat,lon,exclude,lang,units)
-    }
-
+   override suspend fun getRetrofitList(lat:Double, lon:Double, exclude:String, lang:String, units:String): MyResponse? {
+      return remoteSource.getRetrofitList(lat,lon,exclude,lang,units)
+   }
     override fun getHomeData(): Flow<MyResponse>? {
         return localSource.getHomeData()
     }
@@ -56,4 +55,6 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
     override suspend fun deletefromAlertTable(alertData: AlertData) {
         localSource.deletefromAlertTable(alertData)
     }
+
+
 }
