@@ -10,13 +10,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.weather.home.view.GetMyLocation
 import com.example.weather.model.MyResponse
 import com.example.weather.model.RepositoryInterface
+import com.example.weather.network.ApiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repo: RepositoryInterface,private val context: Context): ViewModel() {
-    private var _homeData: MutableLiveData<MyResponse> = MutableLiveData<MyResponse>()
-    val homeData: LiveData<MyResponse> = _homeData
+
+   private var _homeData: MutableStateFlow<ApiState> = MutableStateFlow(ApiState.Loading)
+    val homeData: StateFlow<ApiState> = _homeData
 
      fun getLatitude_Longitude(language:String,unit:String){
         var getMyLocation:GetMyLocation = GetMyLocation(context)
@@ -28,14 +33,27 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
     }
      fun getWeatherData(lati:Double, longi:Double,language:String,unit:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _homeData.postValue(repo.getRetrofitWeatherData(lati,longi,"minutely",language,unit))
+            repo.getRetrofitList(lati,longi,"minutely",language,unit).catch { e->
+                _homeData.value = ApiState.Failure(e)
+            }?.collect{
+                Log.i("ammar", "${it.code()} ${it.body().toString()}")
+                if(it.isSuccessful && it.body()!=null) {
+                    _homeData.value = ApiState.Success(it.body()!!)
+                }
+                else {
+                    _homeData.value = ApiState.Failure(java.lang.NullPointerException())
+                }
+            }
+
         }
 
     }
     fun getHomeDataFromDataBase(){
         viewModelScope.launch (Dispatchers.IO){
-            repo.getHomeData()?.collect{
-                _homeData.postValue(it)
+            repo.getHomeData().catch {e ->
+                _homeData.value = ApiState.Failure(e)
+            }.collect{
+                _homeData.value = ApiState.Success(it)
             }
         }
 

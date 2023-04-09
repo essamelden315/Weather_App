@@ -128,7 +128,7 @@ class MapsFragment() : Fragment() {
         var name = "Unknown !!!"
         var geocoder = Geocoder(requireContext()).getFromLocation(latitude, longitude, 1)
         if (geocoder!!.size > 0)
-            name = "${geocoder?.get(0)?.locality}, ${geocoder?.get(0)?.adminArea}, ${geocoder?.get(0)?.countryName}"
+            name = "${geocoder?.get(0)?.adminArea}, ${geocoder?.get(0)?.countryName}"
         var latlng = LatLng(latitude, longitude)
         var update: CameraUpdate = CameraUpdateFactory.newLatLngZoom(latlng, fl)
         mMap.addMarker(MarkerOptions().position(latlng))

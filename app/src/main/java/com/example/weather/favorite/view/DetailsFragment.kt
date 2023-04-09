@@ -1,16 +1,21 @@
 package com.example.weather.favorite.view
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.weather.R
 import com.example.weather.database.ConcreteLocalSource
 import com.example.weather.database.LocalDataSource
 import com.example.weather.databinding.FragmentDetailsBinding
@@ -18,9 +23,12 @@ import com.example.weather.home.viewmodel.HomeViewModel
 import com.example.weather.home.viewmodel.HomeViewModelFactory
 import com.example.weather.model.MyResponse
 import com.example.weather.model.Repository
+import com.example.weather.network.ApiState
 import com.example.weather.network.RemoteSource
 import com.example.weather.network.WeatherClient
 import com.example.weather.utilities.FacilitateWork
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,6 +41,7 @@ class DetailsFragment : Fragment() {
     lateinit var manger2: LinearLayoutManager
     lateinit var viewModel: HomeViewModel
     lateinit var sharedPref: SharedPreferences
+    private lateinit var progressDialog: ProgressDialog
     lateinit var lang:String
     lateinit var location:String
     lateinit var speed:String
@@ -53,6 +62,9 @@ class DetailsFragment : Fragment() {
         detailsBinding = FragmentDetailsBinding.inflate(inflater, container, false)
         manger = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         manger2 = LinearLayoutManager(context)
+        progressDialog = ProgressDialog(context)
+        progressDialog.setMessage(activity?.getString(R.string.dialogProgress))
+
         return detailsBinding.root
     }
 
@@ -71,12 +83,29 @@ class DetailsFragment : Fragment() {
             args.locationData.myLongitude,
             lang,
             units)
-        viewModel.homeData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                setDetailsScreenData(it)
-                setDetailsScreenAdapter(it)
+        lifecycleScope.launch{
+            viewModel.homeData.collect{
+                when (it){
+                    is ApiState.Loading ->{
+                        progressDialog.show()
+                        Toast.makeText(context,"Loading", Toast.LENGTH_SHORT).show()
+                    }
+                    is ApiState.Success ->{
+                        progressDialog.hide()
+                        setDetailsScreenData(it.myResponse as MyResponse)
+                        setDetailsScreenAdapter(it.myResponse as MyResponse)
+                    }
+                    else ->  Snackbar.make(
+                        detailsBinding.imageView3,
+                        "There is no internet connection",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
+
             }
         }
+
     }
 
     fun convertDate(time: Long?): String {

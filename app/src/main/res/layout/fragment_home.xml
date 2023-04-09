@@ -2,94 +2,110 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/homeConstraint"
     android:layout_width="match_parent"
+    android:id="@+id/homeConstraint"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:layout_columnWeight="3"
-    tools:context=".home.view.Home">
+    android:layout_gravity="center"
+    tools:context=".home.view.Home"
+    tools:keep="@layout/hms_download_progress,@drawable/screen_off,@layout/upsdk*"
+    tools:shrinkMode="strict">
 
-    <TextView
-        android:id="@+id/dateTxt"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/homeSwipeLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="cursive"
-        android:textColor="@color/textColor"
-        android:textSize="28sp"
-        android:textStyle="bold"
+        android:layout_height="220dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/degeeTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="cursive"
-        android:textColor="@color/textColor"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/countryTxt"
-        app:layout_constraintStart_toStartOf="@+id/countryTxt"
-        app:layout_constraintTop_toBottomOf="@+id/countryTxt" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/countryTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/textColor"
-        android:textSize="23sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateTxt" />
+            <TextView
+                android:id="@+id/dateTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="cursive"
+                android:textColor="@color/textColor"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/degreeType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:fontFamily="cursive"
-        android:textColor="@color/textColor"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/degeeTxt"
-        app:layout_constraintTop_toTopOf="@+id/degeeTxt" />
+            <TextView
+                android:id="@+id/degreeType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:fontFamily="cursive"
+                android:textColor="@color/textColor"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/degeeTxt"
+                app:layout_constraintTop_toBottomOf="@+id/countryTxt" />
 
-    <ImageView
-        android:id="@+id/weatherImage"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@drawable/ic_launcher_foreground"
-        app:layout_constraintBottom_toBottomOf="@+id/weatherStatus"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/countryTxt"
-        app:layout_constraintTop_toTopOf="@+id/countryTxt" />
+            <TextView
+                android:id="@+id/countryTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="30dp"
+                android:textColor="@color/textColor"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateTxt" />
 
-    <TextView
-        android:id="@+id/weatherStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:fontFamily="serif"
-        android:textColor="@color/textColor"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/degreeType"
-        app:layout_constraintStart_toStartOf="@+id/degeeTxt"
-        app:layout_constraintTop_toBottomOf="@+id/degeeTxt" />
+            <ImageView
+                android:id="@+id/weatherImage"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:src="@drawable/ic_launcher_foreground"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherStatus"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/degreeType"
+                app:layout_constraintTop_toTopOf="@+id/countryTxt" />
+
+            <TextView
+                android:id="@+id/degeeTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="cursive"
+                android:textColor="@color/textColor"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/countryTxt"
+                app:layout_constraintStart_toStartOf="@+id/countryTxt"
+                app:layout_constraintTop_toBottomOf="@+id/countryTxt" />
+
+            <TextView
+                android:id="@+id/weatherStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="serif"
+                android:textColor="@color/textColor"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/degreeType"
+                app:layout_constraintStart_toStartOf="@+id/degeeTxt"
+                app:layout_constraintTop_toBottomOf="@+id/degeeTxt" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weatherStatus">
+        app:layout_constraintTop_toBottomOf="@+id/homeSwipeLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
