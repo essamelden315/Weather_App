@@ -64,11 +64,13 @@
                 android:id="@+id/weatherImage"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
+                android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintBottom_toBottomOf="@+id/weatherStatus"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/degreeType"
-                app:layout_constraintTop_toTopOf="@+id/countryTxt" />
+                app:layout_constraintTop_toTopOf="@+id/countryTxt"
+                tools:src="@drawable/ic_launcher_foreground" />
 
             <TextView
                 android:id="@+id/degeeTxt"
