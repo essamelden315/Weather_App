@@ -9,6 +9,7 @@ import com.example.weather.getOrAwaitValue
 import com.example.weather.model.AlertData
 import com.example.weather.model.SavedDataFormula
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.*
@@ -40,7 +41,7 @@ class AlertViewModelTest{
         viewModel = AlertViewModel(repo)
     }
     @Test
-    fun getAlert_retrunAllDataFromAlertTable()= runBlocking{
+    fun getAlert_retrunAllDataFromAlertTable()= mainDispatchersRule.runBlockingTest{
         //given
         viewModel.insertIntoAlert(dummyData1)
         //then

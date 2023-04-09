@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit
 
 
 class Alert : Fragment(),onClickLinsterInterface {
-    private val CHANEL = "CHANNEL_ID"
+    private lateinit var CHANEL:String
     lateinit var binding: FragmentAlertBinding
     lateinit var alarmManager: AlarmManager
     lateinit var pendingIntent: PendingIntent
@@ -45,6 +45,7 @@ class Alert : Fragment(),onClickLinsterInterface {
     lateinit var myAdapter: AlertAdapter
     lateinit var manager: LinearLayoutManager
     lateinit var sharedPreferences:SharedPreferences
+    lateinit var edit:SharedPreferences.Editor
     lateinit var choise:String
     var requestCode:Long =0
     var cashDate1: String? = null
@@ -63,6 +64,7 @@ class Alert : Fragment(),onClickLinsterInterface {
         activity?.setTitle(R.string.menu_alerts)
         binding = FragmentAlertBinding.inflate(inflater, container, false)
         sharedPreferences = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
+        edit = sharedPreferences.edit()
         choise = sharedPreferences.getString("what","notification") as String
         alertFactory = AlertViewModelFactory(
             Repository.getInstance(
@@ -114,14 +116,11 @@ class Alert : Fragment(),onClickLinsterInterface {
             pickTime(dialogBinding, 1)
             pickDate(dialogBinding, 1)
         }
-
-
         dialogBinding.toBtn.setOnClickListener {
             pickTime(dialogBinding, 2)
             pickDate(dialogBinding, 2)
         }
         dialogBinding.timeCalenderRadioGroup.setOnCheckedChangeListener{group , checkedId ->
-            val edit = sharedPreferences.edit()
             if(group.checkedRadioButtonId == R.id.notificationRBtn) {
                 edit.putString("what","notification")
                 edit.commit()
@@ -139,7 +138,11 @@ class Alert : Fragment(),onClickLinsterInterface {
 
             ) {
                 dialog.dismiss()
-                requestCode= Calendar.getInstance().timeInMillis
+                requestCode= (Calendar.getInstance().timeInMillis)-100
+                CHANEL = requestCode.toString()
+                Log.i("recieverChannel", "showDialog: $CHANEL")
+                edit.putString("channel",CHANEL)
+                edit.commit()
                 viewModel.insertIntoAlert(
                     AlertData(
                         cashTime1!!,
@@ -154,7 +157,7 @@ class Alert : Fragment(),onClickLinsterInterface {
                     )
                 )
 
-                setAlarm()
+                setAlarm(sharedPreferences.getString("what","notification").toString())
                 cashDate1 = null
                 cashDate2 = null
                 cashTime1 = null
@@ -249,16 +252,18 @@ class Alert : Fragment(),onClickLinsterInterface {
 
 
     // set Alarm
-    private fun setAlarm() {
+    private fun setAlarm(what:String) {
         var noOfDays = cashCalenderToDate - cashCalenderFromDate
         val days = TimeUnit.MILLISECONDS.toDays(noOfDays)
         val dayInMilliSecond = 24 * 60 * 60 * 1000
         alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
+        Log.i("esssss", "setAlarm: $CHANEL")
+        intent.putExtra("ess",CHANEL)
+        intent.putExtra("what",what)
         for (i in 0..days) {
             createNotificationChannel()
-            pendingIntent = getBroadcast(requireContext(), (requestCode-10+i).toInt(), intent, 0)
-            Log.i("alertessam", "setAlarm: ${trigerTime().timeInMillis}")
+            pendingIntent = getBroadcast(requireContext(), (requestCode+i).toInt(), intent, 0)
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP, trigerTime().timeInMillis + (i * dayInMilliSecond), pendingIntent
             )
@@ -294,6 +299,7 @@ class Alert : Fragment(),onClickLinsterInterface {
         val days = TimeUnit.MILLISECONDS.toDays(noOfDays)
         alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(activity, AlarmReceiver::class.java)
+
         for (i in 0..days) {
             pendingIntent = getBroadcast(context, (alertData.requestCode*i).toInt(), intent, 0)
             alarmManager.cancel(pendingIntent)

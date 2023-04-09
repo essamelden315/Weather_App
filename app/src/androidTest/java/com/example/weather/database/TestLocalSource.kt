@@ -4,12 +4,17 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import androidx.test.filters.SmallTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.runner.AndroidJUnitRunner
 import com.example.weather.getOrAwaitValue
 import com.example.weather.model.AlertData
 import com.example.weather.model.SavedDataFormula
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
+import org.assertj.core.api.Assertions
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
@@ -23,7 +28,7 @@ import org.junit.runner.RunWith
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-@SmallTest
+@MediumTest
 class TestLocalSource {
     @get:Rule
     val instance: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -39,25 +44,25 @@ class TestLocalSource {
         ).build()
     }
     @Test
-    fun insertAlertData() = runBlocking {
+    fun insertAlertData() = runBlockingTest {
         //Given
-        val data = AlertData("","","","",10L,10L,10L,10L,10L)
+        val data = AlertData(id = 3,"","","","",10L,10L,10L,10L,10L)
         local.insertIntoAlertTable(data)
         // when
         val result =local.getAlertData().getOrAwaitValue {  }
         // then load the data contains the expected value
-        assertThat(result.get(0).milleDateFrom, `is`(data.milleDateFrom))
+        Assertions.assertThat(result).contains(data)
+        local.deletefromAlertTable(data)
     }
     @Test
-    fun deleteAlertData() = runBlocking {
+    fun deleteAlertData() = runBlockingTest {
         //Given
-        val data = AlertData("","","","",10L,10L,10L,10L,10L)
-        val data2 = AlertData("","","","",10L,10L,10L,10L,10L)
+        val data = AlertData(id = 3,"","","","",10L,10L,10L,10L,10L)
         local.insertIntoAlertTable(data)
         local.deletefromAlertTable(data)
         // when
         val result =local.getAlertData().getOrAwaitValue {  }
         // then load the data contains the expected value
-        assertThat(result, `is`(emptyList()))
+        Assertions.assertThat(result).doesNotContain(data)
     }
 }

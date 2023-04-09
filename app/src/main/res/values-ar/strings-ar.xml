@@ -5,7 +5,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="My_Weather">طقسي</string>
     <string name="CelSign">°س</string>
-    <string name="KelSign">°كلفن</string>
+    <string name="KelSign">°ك</string>
     <string name="FehSign">°ف</string>
     <string name="AddTOFavButton">أضف الي المفضلة</string>
     <string name="FavDeleteBtn">اسمح</string>

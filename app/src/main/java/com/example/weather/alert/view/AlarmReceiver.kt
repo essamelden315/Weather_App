@@ -37,13 +37,15 @@ import com.example.weather.network.RemoteSource
 import com.example.weather.network.WeatherClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AlarmReceiver:BroadcastReceiver(){
 
-    private val CHANEL = "CHANNEL_ID"
+    private lateinit var CHANEL:String
+    private lateinit var what:String
     private lateinit var  repo:Repository
     private lateinit var result:MyResponse
     private lateinit var sharedPreferences: SharedPreferences
@@ -51,9 +53,13 @@ class AlarmReceiver:BroadcastReceiver(){
     private lateinit var choise:String
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context?, intent: Intent?) {
+        CHANEL = intent?.getStringExtra("ess").toString()
+        what = intent?.getStringExtra("what").toString()
+        Log.i("esssss", "onReceive: $CHANEL")
+        Log.i("esssss", "onReceive: $what")
         spChoise = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
         choise = spChoise.getString("what","notification") as String
-        sharedPreferences = context?.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
+        sharedPreferences = context.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
         val lat = sharedPreferences.getString("lat","${0.0}")?.toDouble() as Double
         val lon = sharedPreferences.getString("lon","${0.0}")?.toDouble() as Double
         var msg="Every thing is okay"
@@ -69,13 +75,14 @@ class AlarmReceiver:BroadcastReceiver(){
            }
             if(!result.alerts.isNullOrEmpty())
                 msg = (result.alerts.get(0).description).toString()
-            val intent2 = Intent(context, MainActivity::class.java)
-            intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            val pendingIntent = PendingIntent.getActivity(context, 0,intent2,0)
-            if (choise.equals("notification")){
+
+            if (what.equals("notification")){
+                val intent2 = Intent(context, MainActivity::class.java)
+                intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                val pendingIntent = PendingIntent.getActivity(context, 0,intent2,0)
                 val builder = NotificationCompat.Builder(context!!, CHANEL)
                     .setSmallIcon(R.drawable.alert_011)
-                    .setContentTitle(result.timezone)
+                    .setContentTitle("ًWeather")
                     .setContentText(msg)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
