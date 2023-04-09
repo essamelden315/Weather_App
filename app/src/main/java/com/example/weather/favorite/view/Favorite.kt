@@ -50,6 +50,10 @@ class Favorite : Fragment(),ListnerInterface {
         viewModel = ViewModelProvider(requireActivity(), favFactory).get(FavoriteViewModel::class.java)
         favAdapter = FavAdapter(listOf(), this)
         viewModel.favData.observe(viewLifecycleOwner) { data ->
+            if(data.isNotEmpty())
+                binding.lottieLayerName.visibility=View.GONE
+            else
+                binding.lottieLayerName.visibility=View.VISIBLE
                favAdapter.setList(data)
         }
         binding.FavRV.adapter = favAdapter
