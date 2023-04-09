@@ -22,7 +22,7 @@ class FavoriteViewModelTest{
     val mainDispatchersRule = MainDispatchersRule()
 
     lateinit var viewModel :FavoriteViewModel
-    lateinit var repo : FakeRepo
+    lateinit var repo : FakeFavRepo
     lateinit var dummyData1:SavedDataFormula
     lateinit var dummyData2:SavedDataFormula
 
@@ -34,7 +34,7 @@ class FavoriteViewModelTest{
     @Before
     fun setUp(){
         initializeVariables()
-        repo = FakeRepo()
+        repo = FakeFavRepo()
         viewModel = FavoriteViewModel(repo)
     }
 
@@ -55,10 +55,10 @@ class FavoriteViewModelTest{
         //given
         viewModel.insertIntoFav(dummyData1)
         viewModel.insertIntoFav(dummyData2)
-        //then
+        //when
         viewModel.getLocalRepo()
         var result=viewModel.favData.getOrAwaitValue {  }
-        //result
+        //then
         assertThat(result,not(emptyList()))
     }
 
@@ -67,10 +67,10 @@ class FavoriteViewModelTest{
         //given
         viewModel.insertIntoFav(dummyData1)
         viewModel.deleteFromFav(dummyData1)
-        //then
+        //when
         viewModel.getLocalRepo()
         var result=viewModel.favData.getOrAwaitValue {  }
-        //result
+        //then
         assertThat(result,`is`(emptyList()))
     }
 }

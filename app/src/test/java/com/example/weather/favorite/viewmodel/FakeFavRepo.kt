@@ -6,9 +6,11 @@ import com.example.weather.model.RepositoryInterface
 import com.example.weather.model.SavedDataFormula
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.Response
 
-class FakeRepo:RepositoryInterface {
-    var location :MutableList<SavedDataFormula> = mutableListOf()
+class FakeFavRepo:RepositoryInterface {
+    var favourites :MutableList<SavedDataFormula> = mutableListOf()
+    var alerts : MutableList<AlertData> = mutableListOf()
 
     override fun getHomeData(): Flow<MyResponse> {
         TODO("Not yet implemented")
@@ -22,41 +24,37 @@ class FakeRepo:RepositoryInterface {
         TODO("Not yet implemented")
     }
 
-    override fun showFavData(): Flow<List<SavedDataFormula>> {
-        val flowData= flow {
-            val storedLocatios=location.toList()
-            emit(storedLocatios)
-        }
-        return flowData
+    override fun showFavData(): Flow<List<SavedDataFormula>> = flow {
+        emit(favourites.toList())
     }
 
     override suspend fun insertFavData(savedDataFormula: SavedDataFormula) {
-        location.add(savedDataFormula)
+        favourites.add(savedDataFormula)
     }
 
     override suspend fun deleteFromFav(savedDataFormula: SavedDataFormula) {
-        location.remove(savedDataFormula)
+        favourites.remove(savedDataFormula)
     }
 
-    override fun getAlertData(): Flow<List<AlertData>> {
-        TODO("Not yet implemented")
+    override fun getAlertData(): Flow<List<AlertData>> = flow {
+        emit(alerts.toList())
     }
 
     override suspend fun insertIntoAlertTable(alertData: AlertData) {
-        TODO("Not yet implemented")
+        alerts.add(alertData)
     }
 
     override suspend fun deletefromAlertTable(alertData: AlertData) {
-        TODO("Not yet implemented")
+       alerts.remove(alertData)
     }
 
-    override suspend fun getRetrofitList(
+    override fun getRetrofitList(
         lat: Double,
         lon: Double,
         exclude: String,
         lang: String,
         units: String
-    ): Flow<MyResponse> {
+    ): Flow<Response<MyResponse>> {
         TODO("Not yet implemented")
     }
 }

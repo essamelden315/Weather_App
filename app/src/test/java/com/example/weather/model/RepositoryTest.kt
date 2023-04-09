@@ -42,9 +42,9 @@ class RepositoryTest{
     fun getDataFromRetrofit()= runBlocking{
         //given
         val expected = myResponse
-        //then
+        //when
          repo.getRetrofitList(31.0,31.0,"","","").collect{
-            //result
+            //then
             assertEquals(myResponse,it)
         }
     }
@@ -54,9 +54,9 @@ class RepositoryTest{
         //given
         val data= SavedDataFormula(31.0,31.0,"alexandria")
         repo.insertFavData(data)
-        //then
+        //when
          repo.showFavData().collect{
-            //result
+            //then
             assertThat(it,`is`(not(emptyList())))
         }
     }
@@ -65,10 +65,10 @@ class RepositoryTest{
         //given
         val data= SavedDataFormula(31.0,31.0,"alexandria")
         repo.insertFavData(data)
-        //then
+        //when
         repo.deleteFromFav(data)
          repo.showFavData().collect{
-            //result
+            //then
             assertThat(it,`is`(emptyList()))
         }
     }
