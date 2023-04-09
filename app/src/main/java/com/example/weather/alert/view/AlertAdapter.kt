@@ -23,8 +23,10 @@ class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickL
 
     override fun onBindViewHolder(holder: myViewHolder, position: Int) {
         var alertItem = alertList[position]
-        val endTime = alertItem.milleTimeTo + (alertItem.milleTimeTo - alertItem.milleTimeFrom)
-        if(Calendar.getInstance().timeInMillis > endTime)
+        //val endTime = alertItem.milleDateTo + (alertItem.milleTimeTo - alertItem.milleTimeFrom)
+        val endTime = trigerTime(alertItem.milleDateTo,alertItem.milleTimeTo)
+        Log.i("essama", "end time : ${endTime.timeInMillis}")
+        if(Calendar.getInstance().timeInMillis > endTime.timeInMillis)
             onClick.cancleAlarm(alertItem)
         holder.viewBinding.fromTimeCard.text = alertItem.fromTime
         holder.viewBinding.fromDateCard.text = alertItem.fromDate
@@ -39,6 +41,18 @@ class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickL
 
     override fun getItemCount(): Int {
         return alertList.size
+    }
+    fun trigerTime(toDate:Long,toTime:Long): Calendar{
+        var testCanlender = Calendar.getInstance()
+        testCanlender.timeInMillis = toDate
+        val trigerCalender = Calendar.getInstance()
+        trigerCalender.set(Calendar.DAY_OF_MONTH,testCanlender.get(Calendar.DAY_OF_MONTH))
+        trigerCalender.set(Calendar.MONTH,testCanlender.get(Calendar.MONTH))
+        trigerCalender.set(Calendar.YEAR,testCanlender.get(Calendar.YEAR))
+        testCanlender.timeInMillis = toTime
+        trigerCalender.set(Calendar.HOUR_OF_DAY,testCanlender.get(Calendar.HOUR_OF_DAY))
+        trigerCalender.set(Calendar.MINUTE,testCanlender.get(Calendar.MINUTE))
+        return trigerCalender
     }
     fun setList(List: List<AlertData>){
         alertList = List

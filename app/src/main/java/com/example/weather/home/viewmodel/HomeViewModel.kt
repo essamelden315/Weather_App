@@ -36,7 +36,6 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
             repo.getRetrofitList(lati,longi,"minutely",language,unit).catch { e->
                 _homeData.value = ApiState.Failure(e)
             }?.collect{
-                Log.i("ammar", "${it.code()} ${it.body().toString()}")
                 if(it.isSuccessful && it.body()!=null) {
                     _homeData.value = ApiState.Success(it.body()!!)
                 }

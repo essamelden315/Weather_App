@@ -257,7 +257,8 @@ class Alert : Fragment(),onClickLinsterInterface {
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         for (i in 0..days) {
             createNotificationChannel()
-            pendingIntent = getBroadcast(requireContext(), (requestCode*i).toInt(), intent, 0)
+            pendingIntent = getBroadcast(requireContext(), (requestCode-10+i).toInt(), intent, 0)
+            Log.i("alertessam", "setAlarm: ${trigerTime().timeInMillis}")
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP, trigerTime().timeInMillis + (i * dayInMilliSecond), pendingIntent
             )

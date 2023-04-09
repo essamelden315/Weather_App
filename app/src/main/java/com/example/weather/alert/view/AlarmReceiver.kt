@@ -37,6 +37,7 @@ import com.example.weather.network.RemoteSource
 import com.example.weather.network.WeatherClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -62,7 +63,10 @@ class AlarmReceiver:BroadcastReceiver(){
         ) as Repository
 
         CoroutineScope(Dispatchers.IO).launch {
-           result= repo.getRetrofitList(lat,lon,"minutely","en","metric") as MyResponse
+           repo.getRetrofitList(lat,lon,"minutely","en","metric").collect{
+               result = it.body()!!
+               Log.i("eeTAGee", "onReceive: "+it.body())
+           }
             if(!result.alerts.isNullOrEmpty())
                 msg = (result.alerts.get(0).description).toString()
             val intent2 = Intent(context, MainActivity::class.java)

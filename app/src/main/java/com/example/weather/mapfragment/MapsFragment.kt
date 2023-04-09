@@ -154,7 +154,6 @@ class MapsFragment() : Fragment() {
                         favFactory
                     ).get(FavoriteViewModel::class.java)
                     viewModel.insertIntoFav(SavedDataFormula(latitude, longitude, name))
-                    Log.i("room", "inserted")
                     Toast.makeText(requireContext(), "Location is added", Toast.LENGTH_SHORT).show()
                     Navigation.findNavController(it).navigate(R.id.fromMapToFav)
                 }

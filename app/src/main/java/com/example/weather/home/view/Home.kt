@@ -179,7 +179,6 @@ class Home : Fragment() {
         sharedPref = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
         lang = sharedPref.getString("language", "en").toString()
         location = sharedPref.getString("location", "gps").toString()
-        Log.i("essamsp", location)
         speed = sharedPref.getString("speed", "meter").toString()
         temp = sharedPref.getString("temp", "kel").toString()
         mapDialog = sharedPref.getBoolean("mapFromDialog",false)
