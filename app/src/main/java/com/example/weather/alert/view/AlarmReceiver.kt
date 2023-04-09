@@ -55,16 +55,12 @@ class AlarmReceiver:BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
         CHANEL = intent?.getStringExtra("ess").toString()
         what = intent?.getStringExtra("what").toString()
-        Log.i("esssss", "onReceive: $CHANEL")
-        Log.i("esssss", "onReceive: $what")
 
         spChoise = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
         choise = spChoise.getString("what","notification") as String
         sharedPreferences = context.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
         val lat = intent?.getStringExtra("lat").toString().toDouble()
         val lon = intent?.getStringExtra("lon").toString().toDouble()
-        Log.i("esssss", "onReceive: $lat")
-        Log.i("esssss", "onReceive: $lon")
         var msg="Every thing is okay"
         repo =  Repository.getInstance(
             WeatherClient.getInstance() as RemoteSource,
@@ -74,7 +70,6 @@ class AlarmReceiver:BroadcastReceiver(){
         CoroutineScope(Dispatchers.IO).launch {
            repo.getRetrofitList(lat,lon,"minutely","ar","metric").collect{
                result = it.body()!!
-               Log.i("eeTAGee", "onReceive: "+it.body())
            }
             if(!result.alerts.isNullOrEmpty())
                 msg = (result.alerts.get(0).event).toString()

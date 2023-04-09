@@ -138,17 +138,19 @@ class Alert : Fragment(),onClickLinsterInterface {
                 edit.commit()
             }
         }
+
         dialogBinding.OkBtn.setOnClickListener {
             if (cashTime1 != null && cashDate1 != null &&
                 cashTime2 != null && cashDate2 != null &&
-                dialogBinding.notificationRBtn.isChecked ||
-                dialogBinding.alarmRBtn.isChecked
+                (dialogBinding.notificationRBtn.isChecked ||
+                dialogBinding.alarmRBtn.isChecked) &&
+                cashCalenderToDate-cashCalenderFromDate > 0 &&
+                cashCalenderToTime-cashCalenderFromTime > 0
 
             ) {
                 dialog.dismiss()
                 requestCode= (Calendar.getInstance().timeInMillis)-100
                 CHANEL = requestCode.toString()
-                Log.i("recieverChannel", "showDialog: $CHANEL")
                 edit.putString("channel",CHANEL)
                 edit.commit()
                 viewModel.insertIntoAlert(
@@ -173,7 +175,7 @@ class Alert : Fragment(),onClickLinsterInterface {
             } else
                 Toast.makeText(
                     requireContext(),
-                    "not allowed to let any filed empty",
+                    "not allowed to let any filed empty or to set the end date before start date",
                     Toast.LENGTH_LONG
                 ).show()
         }
@@ -266,9 +268,6 @@ class Alert : Fragment(),onClickLinsterInterface {
         val dayInMilliSecond = 24 * 60 * 60 * 1000
         alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
-        Log.i("esssss", "setAlarm: $CHANEL")
-        Log.i("esssss", "setAlarm: $lat")
-        Log.i("esssss", "setAlarm: $lon")
         intent.putExtra("ess",CHANEL)
         intent.putExtra("what",what)
         intent.putExtra("lat",lat)
