@@ -19,9 +19,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repo: RepositoryInterface,private val context: Context): ViewModel() {
-   /* private var _homeData: MutableLiveData<MyResponse> = MutableLiveData<MyResponse>()
-    val homeData: LiveData<MyResponse> = _homeData*/
-   private var _homeData: MutableStateFlow<ApiState> = MutableStateFlow<ApiState>(ApiState.Loading)
+
+   private var _homeData: MutableStateFlow<ApiState> = MutableStateFlow(ApiState.Loading)
     val homeData: StateFlow<ApiState> = _homeData
 
      fun getLatitude_Longitude(language:String,unit:String){
@@ -34,10 +33,16 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
     }
      fun getWeatherData(lati:Double, longi:Double,language:String,unit:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getRetrofitList(lati,longi,"minutely",language,unit)?.catch { e->
+            repo.getRetrofitList(lati,longi,"minutely",language,unit).catch { e->
                 _homeData.value = ApiState.Failure(e)
             }?.collect{
-                _homeData.value = ApiState.Success(it)
+                Log.i("ammar", "${it.code()} ${it.body().toString()}")
+                if(it.isSuccessful && it.body()!=null) {
+                    _homeData.value = ApiState.Success(it.body()!!)
+                }
+                else {
+                    _homeData.value = ApiState.Failure(java.lang.NullPointerException())
+                }
             }
 
         }
@@ -45,9 +50,9 @@ class HomeViewModel(private val repo: RepositoryInterface,private val context: C
     }
     fun getHomeDataFromDataBase(){
         viewModelScope.launch (Dispatchers.IO){
-            repo.getHomeData()?.catch {e ->
+            repo.getHomeData().catch {e ->
                 _homeData.value = ApiState.Failure(e)
-            }?.collect{
+            }.collect{
                 _homeData.value = ApiState.Success(it)
             }
         }

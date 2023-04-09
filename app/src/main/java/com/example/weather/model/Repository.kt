@@ -3,6 +3,7 @@ package com.example.weather.model
 import com.example.weather.database.LocalDataSource
 import com.example.weather.network.RemoteSource
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):RepositoryInterface {
     var remoteSource:RemoteSource = rs
@@ -16,7 +17,7 @@ class Repository private constructor(rs: RemoteSource,ls:LocalDataSource):Reposi
             return myInstance
         }
     }
-   override suspend fun getRetrofitList(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<MyResponse>{
+   override fun getRetrofitList(lat:Double, lon:Double, exclude:String, lang:String, units:String): Flow<Response<MyResponse>>{
       return remoteSource.getRetrofitList(lat,lon,exclude,lang,units)
    }
     override fun getHomeData(): Flow<MyResponse> {

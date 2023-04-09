@@ -83,7 +83,6 @@ class Home : Fragment() {
             binding.homeSwipeLayout.isRefreshing=false
         }
         myHomeData(weatherFactory)
-
     }
     fun myHomeData(weatherFactory: HomeViewModelFactory){
         viewModel = ViewModelProvider(this, weatherFactory).get(HomeViewModel::class.java)
@@ -105,37 +104,39 @@ class Home : Fragment() {
                     viewModel.getWeatherData(it.get(0),it.get(1),lang,units)
                 }
             }
-            lifecycleScope.launch{
+            viewLifecycleOwner.lifecycleScope.launch{
                 viewModel.homeData.collect{
-                    when (it){
-                        is ApiState.Loading ->{
-                            progressDialog.show()
+                        when (it){
+                            is ApiState.Loading ->{
+                                progressDialog.show()
+                            }
+                            is ApiState.Success ->{
+                                it.myResponse?.let { it1 -> viewModel.insertHomeDataIntoDataBase(it1) }
+                                progressDialog.hide()
+                                it.myResponse?.let { it1 -> setHomeScreenData(it1) }
+                                it.myResponse?.let { it1 -> setHomeScreenAdapter(it1) }
+                            }
+                            else ->  Snackbar.make(
+                                binding.imageView5,
+                                "Failed to obtain data from api",
+                                Snackbar.LENGTH_LONG
+                            ).show()
                         }
-                        is ApiState.Success ->{
-                            progressDialog.hide()
-                            setHomeScreenData(it.myResponse)
-                            setHomeScreenAdapter(it.myResponse )
-                            viewModel.insertHomeDataIntoDataBase(it.myResponse)
-                        }
-                        else ->  Snackbar.make(
-                            binding.imageView5,
-                            "Faild to obtain data from api",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
                 }
             }
         } else {
-            progressDialog.dismiss()
             viewModel.getHomeDataFromDataBase()
-            lifecycleScope.launch (Dispatchers.IO){
+            viewLifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
                 viewModel.homeData.collect {
                     when (it) {
+                        is ApiState.Loading ->{
+                            progressDialog.show()
+                        }
                         is ApiState.Success -> {
                             withContext(Dispatchers.Main){
                                 progressDialog.hide()
-                                setHomeScreenData(it.myResponse)
-                                setHomeScreenAdapter(it.myResponse)
+                                it.myResponse?.let { it1 -> setHomeScreenData(it1) }
+                                it.myResponse?.let { it1 -> setHomeScreenAdapter(it1) }
                             }
                         }
                         else -> Snackbar.make(
