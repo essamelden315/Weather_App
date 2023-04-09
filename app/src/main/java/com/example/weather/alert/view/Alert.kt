@@ -45,8 +45,11 @@ class Alert : Fragment(),onClickLinsterInterface {
     lateinit var myAdapter: AlertAdapter
     lateinit var manager: LinearLayoutManager
     lateinit var sharedPreferences:SharedPreferences
+    lateinit var latLonSP:SharedPreferences
     lateinit var edit:SharedPreferences.Editor
     lateinit var choise:String
+    lateinit var lat:String
+    lateinit var lon:String
     var requestCode:Long =0
     var cashDate1: String? = null
     var cashDate2: String? = null
@@ -57,6 +60,7 @@ class Alert : Fragment(),onClickLinsterInterface {
     var cashCalenderToTime: Long = 0
     var cashCalenderToDate: Long = 0
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,6 +70,10 @@ class Alert : Fragment(),onClickLinsterInterface {
         sharedPreferences = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
         edit = sharedPreferences.edit()
         choise = sharedPreferences.getString("what","notification") as String
+        //
+        latLonSP = context?.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
+         lat = latLonSP.getString("lat","${0.0}").toString()
+         lon = latLonSP.getString("lon","${0.0}").toString()
         alertFactory = AlertViewModelFactory(
             Repository.getInstance(
                 WeatherClient.getInstance() as RemoteSource,
@@ -259,8 +267,13 @@ class Alert : Fragment(),onClickLinsterInterface {
         alarmManager = activity?.getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         Log.i("esssss", "setAlarm: $CHANEL")
+        Log.i("esssss", "setAlarm: $lat")
+        Log.i("esssss", "setAlarm: $lon")
         intent.putExtra("ess",CHANEL)
         intent.putExtra("what",what)
+        intent.putExtra("lat",lat)
+        intent.putExtra("lon",lon)
+
         for (i in 0..days) {
             createNotificationChannel()
             pendingIntent = getBroadcast(requireContext(), (requestCode+i).toInt(), intent, 0)

@@ -57,11 +57,14 @@ class AlarmReceiver:BroadcastReceiver(){
         what = intent?.getStringExtra("what").toString()
         Log.i("esssss", "onReceive: $CHANEL")
         Log.i("esssss", "onReceive: $what")
+
         spChoise = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
         choise = spChoise.getString("what","notification") as String
         sharedPreferences = context.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
-        val lat = sharedPreferences.getString("lat","${0.0}")?.toDouble() as Double
-        val lon = sharedPreferences.getString("lon","${0.0}")?.toDouble() as Double
+        val lat = intent?.getStringExtra("lat").toString().toDouble()
+        val lon = intent?.getStringExtra("lon").toString().toDouble()
+        Log.i("esssss", "onReceive: $lat")
+        Log.i("esssss", "onReceive: $lon")
         var msg="Every thing is okay"
         repo =  Repository.getInstance(
             WeatherClient.getInstance() as RemoteSource,
@@ -69,12 +72,12 @@ class AlarmReceiver:BroadcastReceiver(){
         ) as Repository
 
         CoroutineScope(Dispatchers.IO).launch {
-           repo.getRetrofitList(lat,lon,"minutely","en","metric").collect{
+           repo.getRetrofitList(lat,lon,"minutely","ar","metric").collect{
                result = it.body()!!
                Log.i("eeTAGee", "onReceive: "+it.body())
            }
             if(!result.alerts.isNullOrEmpty())
-                msg = (result.alerts.get(0).description).toString()
+                msg = (result.alerts.get(0).event).toString()
 
             if (what.equals("notification")){
                 val intent2 = Intent(context, MainActivity::class.java)
@@ -82,7 +85,7 @@ class AlarmReceiver:BroadcastReceiver(){
                 val pendingIntent = PendingIntent.getActivity(context, 0,intent2,0)
                 val builder = NotificationCompat.Builder(context!!, CHANEL)
                     .setSmallIcon(R.drawable.alert_011)
-                    .setContentTitle("ًWeather")
+                    .setContentTitle(result.timezone)
                     .setContentText(msg)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
