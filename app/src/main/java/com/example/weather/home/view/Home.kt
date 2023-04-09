@@ -30,6 +30,7 @@ import com.example.weather.network.ApiState
 import com.example.weather.network.NetworkListener
 import com.example.weather.network.RemoteSource
 import com.example.weather.network.WeatherClient
+import com.example.weather.utilities.ChangeIcons
 import com.example.weather.utilities.FacilitateWork
 import com.example.weather.utilities.TimeConverter
 import com.google.android.material.snackbar.Snackbar
@@ -156,8 +157,7 @@ class Home : Fragment() {
         binding.degeeTxt.text = it.current?.temp?.toInt().toString()
         binding.degreeType.text = degreeType
         binding.weatherStatus.text = it.current?.weather?.get(0)?.description
-        val url = "https://openweathermap.org/img/wn/${it.current?.weather?.get(0)?.icon}@2x.png"
-        Glide.with(requireContext()).load(url).into(binding.weatherImage)
+        binding.weatherImage.setImageResource(ChangeIcons.newIcon((it.current?.weather?.get(0)?.icon).toString()))
         binding.pressureValue.text = "${it.current?.pressure} hpa"
         binding.cloudValue.text = "${it.current?.clouds}%"
         binding.visibilityValue.text = "${it.current?.visibility}m"

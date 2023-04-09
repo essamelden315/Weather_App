@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weather.databinding.HourLayoutBinding
 import com.example.weather.model.Current
+import com.example.weather.utilities.ChangeIcons
 import com.example.weather.utilities.FacilitateWork
 import com.example.weather.utilities.TimeConverter
 import java.text.SimpleDateFormat
@@ -30,9 +31,8 @@ class DetailsHoursAdapter (private val hours: List<Current>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         var hour = hours[position]
-        val url = "https://openweathermap.org/img/wn/${hour.weather.get(0).icon}@2x.png"
         val sign = FacilitateWork.getTempUnitAndSign(temp,context as FragmentActivity).second
-        Glide.with(context).load(url).into(holder.viewBinding.hourImage)
+        holder.viewBinding.hourImage.setImageResource(ChangeIcons.newIcon((hour.weather.get(0).icon).toString()))
         holder.viewBinding.hourDate.text = TimeConverter.convertToDayHours(hour.dt)
         holder.viewBinding.hourDegree.text = "${hour.temp.toInt()}${sign}"
     }
