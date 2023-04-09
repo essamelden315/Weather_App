@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class FakeLocal:LocalDataSource {
-    var location :MutableList<SavedDataFormula> = mutableListOf()
+    var favData :MutableList<SavedDataFormula> = mutableListOf()
 
     override fun getHomeData(): Flow<MyResponse> {
         TODO("Not yet implemented")
@@ -21,18 +21,18 @@ class FakeLocal:LocalDataSource {
 
     override fun showFavData(): Flow<List<SavedDataFormula>> {
         val flowData= flow {
-            val storedLocatios=location.toList()
+            val storedLocatios=favData.toList()
             emit(storedLocatios)
         }
         return flowData
     }
 
     override suspend fun insertFavData(savedDataFormula: SavedDataFormula) {
-        location.add(savedDataFormula)
+        favData.add(savedDataFormula)
     }
 
     override suspend fun deleteFromFav(savedDataFormula: SavedDataFormula) {
-        location.remove(savedDataFormula)
+        favData.remove(savedDataFormula)
     }
     override fun getAlertData(): Flow<List<AlertData>> {
         TODO("Not yet implemented")

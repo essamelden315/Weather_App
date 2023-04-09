@@ -45,7 +45,7 @@ class RepositoryTest{
         //when
          repo.getRetrofitList(31.0,31.0,"","","").collect{
             //then
-            assertEquals(myResponse,it)
+            assertEquals(expected,it)
         }
     }
 
