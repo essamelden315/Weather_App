@@ -17,6 +17,7 @@ import com.example.weather.MainActivity
 import com.example.weather.R
 import com.example.weather.databinding.ActivitySplashScreenBinding
 import com.example.weather.databinding.HomeDialogLayoutBinding
+import com.example.weather.network.NetworkListener
 import com.example.weather.utilities.FacilitateWork
 import kotlinx.coroutines.delay
 
@@ -51,26 +52,36 @@ class SplashScreen : AppCompatActivity() {
         val dialogBinding = HomeDialogLayoutBinding.inflate(layoutInflater)
         val dialog= Dialog(this)
         dialog.setContentView(dialogBinding.root)
+        if(NetworkListener.getConnectivity(this)){
+            dialogBinding.dialogMap.isEnabled=true
+            dialogBinding.dialogGps.isEnabled=true
+            dialogBinding.dialogBtn.isEnabled=true
 
-        dialogBinding.dialogGroup.setOnCheckedChangeListener{group , checkId ->
-            if(group.checkedRadioButtonId == R.id.dialogMap) {
-                edit.putBoolean("mapFromDialog", true)
-                edit.putString("location","map")
-                edit.commit()
-            }
-            else{
-                edit.putString("location","gps")
-                edit.commit()
-            }
+            dialogBinding.dialogGroup.setOnCheckedChangeListener{group , checkId ->
+                if(group.checkedRadioButtonId == R.id.dialogMap) {
+                    edit.putBoolean("mapFromDialog", true)
+                    edit.putString("location","map")
+                    edit.commit()
+                }
+                else{
+                    edit.putString("location","gps")
+                    edit.commit()
+                }
 
+            }
+            dialogBinding.dialogBtn.setOnClickListener{
+                edit.putBoolean("isFirst",false)
+                edit.commit()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }else{
+            dialogBinding.dialogMap.isEnabled=false
+            dialogBinding.dialogGps.isEnabled=false
+            dialogBinding.dialogBtn.isEnabled=false
         }
-        dialogBinding.dialogBtn.setOnClickListener{
-            edit.putBoolean("isFirst",false)
-            edit.commit()
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+
         dialog.show()
 
 

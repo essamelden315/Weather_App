@@ -20,7 +20,7 @@ abstract class AppDataBase :RoomDatabase(){
         fun getInstance(context: Context):AppDataBase?{
             return myInstance ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext, AppDataBase::class.java, "weatherDB"
+                    context.applicationContext, AppDataBase::class.java, "weatherDB2"
                 ).build()
                 myInstance = instance
                 instance
