@@ -1,12 +1,18 @@
 package com.example.weather.alert.view
 
+import android.app.Dialog
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import androidx.constraintlayout.widget.Constraints
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather.R
 import com.example.weather.databinding.AlertRecycleviewLayoutBinding
 import com.example.weather.model.AlertData
+import com.example.weather.model.SavedDataFormula
 import java.util.*
 
 
@@ -33,8 +39,7 @@ class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickL
         holder.viewBinding.toTimeCard.text = alertItem.toTime
         holder.viewBinding.toDateCard.text = alertItem.toDate
         holder.viewBinding.alertCardDeleteBtn.setOnClickListener{
-            onClick.cancleAlarm(alertItem)
-            notifyDataSetChanged()
+            dialogDeleteConfirmation(alertItem)
         }
 
     }
@@ -58,6 +63,29 @@ class AlertAdapter (private var alertList: List<AlertData>,var onClick: onClickL
         alertList = List
         notifyDataSetChanged()
     }
+    fun dialogDeleteConfirmation(alertItem: AlertData) {
+        var dialog = Dialog(context)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.delete_dialog)
+        val window: Window? = dialog.getWindow()
+        window?.setLayout(
+            Constraints.LayoutParams.MATCH_PARENT,
+            Constraints.LayoutParams.WRAP_CONTENT
 
+        )
+        window?.setBackgroundDrawableResource(R.color.white);
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.show()
+
+
+        dialog.findViewById<Button>(R.id.warn_deletBtn).setOnClickListener {
+            onClick.cancleAlarm(alertItem)
+            notifyDataSetChanged()
+            dialog.dismiss()
+        }
+        dialog.findViewById<Button>(R.id.warn_cancelBtn).setOnClickListener() {
+            dialog.dismiss()
+        }
+    }
     class myViewHolder(val viewBinding: AlertRecycleviewLayoutBinding): RecyclerView.ViewHolder(viewBinding.root)
 }

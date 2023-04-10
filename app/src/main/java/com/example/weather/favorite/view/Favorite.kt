@@ -54,7 +54,7 @@ class Favorite : Fragment(),ListnerInterface {
                 binding.lottieLayerName.visibility=View.GONE
             else
                 binding.lottieLayerName.visibility=View.VISIBLE
-               favAdapter.setList(data)
+            favAdapter.setList(data)
         }
         binding.FavRV.adapter = favAdapter
         binding.FavRV.layoutManager = manager

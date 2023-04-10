@@ -38,4 +38,8 @@
     <string name="AlertToBtn">To</string>
     <string name="AlertNotification">Notification</string>
     <string name="AlertAlarm">Alarm</string>
+    <string name="Warning">Warning</string>
+    <string name="Warning_Message" >Are you sure you want to delete this item?</string>
+    <string name="Delete">DELETE</string>
+    <string name="Cancel">Cancel</string>
 </resources>

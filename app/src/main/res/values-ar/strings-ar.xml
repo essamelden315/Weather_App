@@ -39,4 +39,8 @@
     <string name="AlertToBtn">الي</string>
     <string name="AlertNotification">اشعارات</string>
     <string name="AlertAlarm">منبه</string>
+    <string name="Warning">انتبه</string>
+    <string name="Warning_Message">هل انت متأكد انك تريد مسح هذه؟</string>
+    <string name="Delete">مسح</string>
+    <string name="Cancel">إلغاء</string>
 </resources>
