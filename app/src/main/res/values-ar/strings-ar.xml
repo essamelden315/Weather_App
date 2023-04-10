@@ -17,9 +17,9 @@
     <string name="SMap">الخريطة</string>
     <string name="EN_Radio">انجليزي</string>
     <string name="AR_Radio">لغتنا العربية</string>
-    <string name="Cel_Radio">سيليزيوس</string>
-    <string name="Kel_Radio">كيلفن</string>
-    <string name="Feh_Radio">فهرينهايت</string>
+    <string name="Cel_Radio">سيليزيوس  متر \\ ثانيه</string>
+    <string name="Kel_Radio">كيلفن  متر \\ ثانيه</string>
+    <string name="Feh_Radio">فهرينهايت  ميل \\ ساعه</string>
     <string name="Meter_Radio">متر \\ ثانيه</string>
     <string name="Mile_Radio">ميل \\ ساعه</string>
     <string name="HomePressure">الضغط</string>

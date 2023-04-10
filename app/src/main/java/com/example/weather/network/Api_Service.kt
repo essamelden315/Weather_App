@@ -13,6 +13,6 @@ interface Api_Service {
         @Query("exclude") exclude: String,
         @Query("lang") lang:String ,
         @Query("units") units:String="metric",
-        @Query("appid") appid: String="bbcb13e1d448621ffd8e565701972f6d"
+        @Query("appid") appid: String="bbcb13e1d448621ffd8e565701972f6d"//04b84810a44a9597d71e664e868b1e7a
     ): Response<MyResponse>
 }

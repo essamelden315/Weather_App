@@ -16,9 +16,9 @@
     <string name="SMap">Map</string>
     <string name="EN_Radio">English</string>
     <string name="AR_Radio">Arabic</string>
-    <string name="Cel_Radio">Celsius</string>
-    <string name="Kel_Radio">Kelvin</string>
-    <string name="Feh_Radio">Fehrenhite</string>
+    <string name="Cel_Radio">Celsius     m/s</string>
+    <string name="Kel_Radio">Kelvin     m/s</string>
+    <string name="Feh_Radio">Fehrenhite  mi/h</string>
     <string name="Meter_Radio">m/s</string>
     <string name="Mile_Radio">mi/h</string>
     <string name="HomePressure">Pressure</string>
