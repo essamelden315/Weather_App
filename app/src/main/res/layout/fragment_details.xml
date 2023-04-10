@@ -61,8 +61,10 @@
 
     <ImageView
         android:id="@+id/detailsWeatherImage"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintBottom_toBottomOf="@+id/detailsWeatherStatus"
         app:layout_constraintEnd_toEndOf="parent"
