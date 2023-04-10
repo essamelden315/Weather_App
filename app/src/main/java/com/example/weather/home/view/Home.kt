@@ -127,7 +127,7 @@ class Home : Fragment() {
             }
         } else {
             viewModel.getHomeDataFromDataBase()
-            viewLifecycleOwner.lifecycleScope.launch (Dispatchers.IO){
+            viewLifecycleOwner.lifecycleScope.launch{
                 viewModel.homeData.collect {
                     when (it) {
                         is ApiState.Loading ->{
