@@ -144,8 +144,8 @@ class Alert : Fragment(),onClickLinsterInterface {
                 cashTime2 != null && cashDate2 != null &&
                 (dialogBinding.notificationRBtn.isChecked ||
                 dialogBinding.alarmRBtn.isChecked) &&
-                cashCalenderToDate-cashCalenderFromDate > 0 &&
-                cashCalenderToTime-cashCalenderFromTime > 0
+                trigerTime(cashCalenderToDate).timeInMillis >
+                trigerTime(cashCalenderFromDate).timeInMillis
 
             ) {
                 dialog.dismiss()
@@ -275,20 +275,21 @@ class Alert : Fragment(),onClickLinsterInterface {
 
         for (i in 0..days) {
             createNotificationChannel()
+            Log.i("esssss", "setAlarm: ${trigerTime(cashCalenderFromDate)}")
             pendingIntent = getBroadcast(requireContext(), (requestCode+i).toInt(), intent, 0)
             alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP, trigerTime().timeInMillis + (i * dayInMilliSecond), pendingIntent
+                AlarmManager.RTC_WAKEUP, trigerTime(cashCalenderFromDate).timeInMillis + (i * dayInMilliSecond), pendingIntent
             )
         }
     }
-    fun trigerTime(): Calendar{
+    fun trigerTime(cash:Long): Calendar{
         var testCanlender = Calendar.getInstance()
-        testCanlender.timeInMillis = cashCalenderFromDate
+        testCanlender.timeInMillis = cash
         val trigerCalender = Calendar.getInstance()
         trigerCalender.set(Calendar.DAY_OF_MONTH,testCanlender.get(Calendar.DAY_OF_MONTH))
         trigerCalender.set(Calendar.MONTH,testCanlender.get(Calendar.MONTH))
         trigerCalender.set(Calendar.YEAR,testCanlender.get(Calendar.YEAR))
-        testCanlender.timeInMillis = cashCalenderFromTime
+        testCanlender.timeInMillis = cash
         trigerCalender.set(Calendar.HOUR_OF_DAY,testCanlender.get(Calendar.HOUR_OF_DAY))
         trigerCalender.set(Calendar.MINUTE,testCanlender.get(Calendar.MINUTE))
         return trigerCalender
