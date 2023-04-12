@@ -49,16 +49,13 @@ class AlarmReceiver:BroadcastReceiver(){
     private lateinit var  repo:Repository
     private lateinit var result:MyResponse
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var spChoise: SharedPreferences
-    private lateinit var choise:String
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onReceive(context: Context?, intent: Intent?) {
         CHANEL = intent?.getStringExtra("ess").toString()
         what = intent?.getStringExtra("what").toString()
 
-        spChoise = context?.getSharedPreferences("choise", Context.MODE_PRIVATE) as SharedPreferences
-        choise = spChoise.getString("what","notification") as String
-        sharedPreferences = context.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
+        sharedPreferences = context?.getSharedPreferences("mapData", Context.MODE_PRIVATE) as SharedPreferences
         val lat = intent?.getStringExtra("lat").toString().toDouble()
         val lon = intent?.getStringExtra("lon").toString().toDouble()
         var msg="Every thing is okay"

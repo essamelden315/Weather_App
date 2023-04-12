@@ -144,8 +144,8 @@ class Alert : Fragment(),onClickLinsterInterface {
                 cashTime2 != null && cashDate2 != null &&
                 (dialogBinding.notificationRBtn.isChecked ||
                 dialogBinding.alarmRBtn.isChecked) &&
-                trigerTime(cashCalenderToDate).timeInMillis >
-                trigerTime(cashCalenderFromDate).timeInMillis
+                trigerTime(cashCalenderToDate,cashCalenderToTime).timeInMillis >
+                trigerTime(cashCalenderFromDate,cashCalenderFromTime).timeInMillis
 
             ) {
                 dialog.dismiss()
@@ -275,21 +275,20 @@ class Alert : Fragment(),onClickLinsterInterface {
 
         for (i in 0..days) {
             createNotificationChannel()
-            Log.i("esssss", "setAlarm: ${trigerTime(cashCalenderFromDate)}")
             pendingIntent = getBroadcast(requireContext(), (requestCode+i).toInt(), intent, 0)
             alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP, trigerTime(cashCalenderFromDate).timeInMillis + (i * dayInMilliSecond), pendingIntent
+                AlarmManager.RTC_WAKEUP, trigerTime(cashCalenderFromDate,cashCalenderFromTime).timeInMillis + (i * dayInMilliSecond), pendingIntent
             )
         }
     }
-    fun trigerTime(cash:Long): Calendar{
+    fun trigerTime(Date:Long,Time:Long): Calendar{
         var testCanlender = Calendar.getInstance()
-        testCanlender.timeInMillis = cash
+        testCanlender.timeInMillis = Date
         val trigerCalender = Calendar.getInstance()
         trigerCalender.set(Calendar.DAY_OF_MONTH,testCanlender.get(Calendar.DAY_OF_MONTH))
         trigerCalender.set(Calendar.MONTH,testCanlender.get(Calendar.MONTH))
         trigerCalender.set(Calendar.YEAR,testCanlender.get(Calendar.YEAR))
-        testCanlender.timeInMillis = cash
+        testCanlender.timeInMillis = Time
         trigerCalender.set(Calendar.HOUR_OF_DAY,testCanlender.get(Calendar.HOUR_OF_DAY))
         trigerCalender.set(Calendar.MINUTE,testCanlender.get(Calendar.MINUTE))
         return trigerCalender
@@ -314,7 +313,7 @@ class Alert : Fragment(),onClickLinsterInterface {
         val intent = Intent(activity, AlarmReceiver::class.java)
 
         for (i in 0..days) {
-            pendingIntent = getBroadcast(context, (alertData.requestCode*i).toInt(), intent, 0)
+            pendingIntent = getBroadcast(context, (alertData.requestCode+i).toInt(), intent, 0)
             alarmManager.cancel(pendingIntent)
         }
         delete(alertData)
