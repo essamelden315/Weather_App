@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:background="@color/white"
+    android:backgroundTint="@color/white"
     app:cardCornerRadius="30dp"
     app:cardElevation="0dp"
     app:cardMaxElevation="0dp">
